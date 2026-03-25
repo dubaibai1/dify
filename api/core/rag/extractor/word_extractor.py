@@ -9,6 +9,8 @@ import os
 import re
 import tempfile
 import uuid
+from collections.abc import Iterable
+from typing import cast
 from urllib.parse import urlparse
 
 from docx import Document as DocxDocument
@@ -36,7 +38,7 @@ class WordExtractor(BaseExtractor):
         file_path: Path to the file to load.
     """
 
-    def __init__(self, file_path: str, tenant_id: str, user_id: str):
+    def __init__(self, file_path: str, tenant_id: str | None, user_id: str | None):
         """Initialize with file path."""
         self.file_path = file_path
         self.tenant_id = tenant_id
@@ -87,8 +89,11 @@ class WordExtractor(BaseExtractor):
 
     def _extract_images_from_docx(self, doc):
         image_count = 0
-        image_map = {}
+        image_map: dict[object, str] = {}
         base_url = dify_config.INTERNAL_FILES_URL or dify_config.FILES_URL
+
+        if self.tenant_id is None or self.user_id is None:
+            return image_map
 
         for r_id, rel in doc.part.rels.items():
             if "image" in rel.target_ref:
@@ -265,7 +270,7 @@ class WordExtractor(BaseExtractor):
     def parse_docx(self, docx_path):
         doc = DocxDocument(docx_path)
 
-        content = []
+        content: list[str] = []
 
         image_map = self._extract_images_from_docx(doc)
 
@@ -363,7 +368,7 @@ class WordExtractor(BaseExtractor):
                 if link_text:
                     target_buffer.append(link_text)
 
-            paragraph_content = []
+            paragraph_content: list[str] = []
             # State for legacy HYPERLINK fields
             hyperlink_field_url = None
             hyperlink_field_text_parts: list[str] = []
@@ -423,7 +428,8 @@ class WordExtractor(BaseExtractor):
 
         paragraphs = doc.paragraphs.copy()
         tables = doc.tables.copy()
-        for element in doc.element.body:
+        body_elements = cast(Iterable[object], getattr(doc.element, "body", []))
+        for element in body_elements:
             if hasattr(element, "tag"):
                 if isinstance(element.tag, str) and element.tag.endswith("p"):  # paragraph
                     para = paragraphs.pop(0)

@@ -122,6 +122,7 @@ class BaseIndexProcessor(ABC):
         """
         Get the NodeParser object according to the processing rule.
         """
+        character_splitter: TextSplitter
         if processing_rule_mode in ["custom", "hierarchical"]:
             # The user-defined segmentation rule
             max_segmentation_tokens_length = dify_config.INDEXING_MAX_SEGMENTATION_TOKENS_LENGTH
@@ -147,7 +148,7 @@ class BaseIndexProcessor(ABC):
                 embedding_model_instance=embedding_model_instance,
             )
 
-        return character_splitter  # type: ignore
+        return character_splitter
 
     def _get_content_files(self, document: Document, current_user: Account | None = None) -> list[AttachmentDocument]:
         """
@@ -158,7 +159,7 @@ class BaseIndexProcessor(ABC):
         images = self._extract_markdown_images(text)
         if not images:
             return multi_model_documents
-        upload_file_id_list = []
+        upload_file_id_list: list[str] = []
 
         for image in images:
             # Collect all upload_file_ids including duplicates to preserve occurrence count

@@ -1,7 +1,9 @@
 import json
+from copy import deepcopy
 from unittest.mock import Mock, patch
 
 import pytest
+from pydantic import ValidationError
 
 from models.source import DataSourceApiKeyAuthBinding
 from services.auth.api_key_auth_service import ApiKeyAuthService
@@ -68,7 +70,16 @@ class TestApiKeyAuthService:
         # Mock successful auth validation
         mock_auth_instance = Mock()
         mock_auth_instance.validate_credentials.return_value = True
-        mock_factory.return_value = mock_auth_instance
+        captured_provider = None
+        captured_credentials = None
+
+        def factory_side_effect(provider, credentials):
+            nonlocal captured_provider, captured_credentials
+            captured_provider = provider
+            captured_credentials = deepcopy(credentials)
+            return mock_auth_instance
+
+        mock_factory.side_effect = factory_side_effect
 
         # Mock encryption
         encrypted_key = "encrypted_test_key_123"
@@ -77,11 +88,14 @@ class TestApiKeyAuthService:
         # Mock database operations
         mock_session.add = Mock()
         mock_session.commit = Mock()
+        expected_credentials = deepcopy(self.mock_credentials)
 
         ApiKeyAuthService.create_provider_auth(self.tenant_id, self.mock_args)
 
         # Verify factory class calls
-        mock_factory.assert_called_once_with(self.provider, self.mock_credentials)
+        assert mock_factory.call_count == 1
+        assert captured_provider == self.provider
+        assert captured_credentials == expected_credentials
         mock_auth_instance.validate_credentials.assert_called_once()
 
         # Verify encryption calls
@@ -378,10 +392,9 @@ class TestApiKeyAuthService:
             ApiKeyAuthService.validate_api_key_auth_args(None)
 
     def test_validate_api_key_auth_args_dict_credentials_with_list_auth_type(self):
-        """Test API key auth args validation - dict credentials with list auth_type"""
+        """Test API key auth args validation - list auth_type is rejected by the typed payload contract"""
         args = self.mock_args.copy()
         args["credentials"]["auth_type"] = ["api_key"]
 
-        # Current implementation checks if auth_type exists and is truthy, list ["api_key"] is truthy
-        # So this should not raise exception, this test should pass
-        ApiKeyAuthService.validate_api_key_auth_args(args)
+        with pytest.raises(ValidationError):
+            ApiKeyAuthService.validate_api_key_auth_args(args)

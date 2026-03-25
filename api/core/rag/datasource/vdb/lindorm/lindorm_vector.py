@@ -88,7 +88,7 @@ class LindormVectorStore(BaseVector):
         batch_size: int = 64,
         timeout: int = 60,
         **kwargs,
-    ):
+    ) -> list[str]:
         logger.info("Total documents to add: %s", len(documents))
         uuids = self._get_uuids(documents)
 
@@ -130,8 +130,11 @@ class LindormVectorStore(BaseVector):
                     Field.METADATA_KEY: documents[i].metadata,
                 }
                 if self._using_ugc:
-                    action_header["index"]["routing"] = self._routing
-                    action_values[ROUTING_FIELD] = self._routing
+                    routing = self._routing
+                    if routing is None:
+                        raise ValueError("UGC index should init vector with valid 'routing_value' parameter value")
+                    action_header["index"]["routing"] = routing
+                    action_values[ROUTING_FIELD] = routing
 
                 actions.append(action_header)
                 actions.append(action_values)
@@ -146,6 +149,8 @@ class LindormVectorStore(BaseVector):
             except Exception:
                 logger.exception("Failed to process batch %s", batch_num + 1)
                 raise
+
+        return uuids
 
     def get_ids_by_metadata_field(self, key: str, value: str):
         query: dict[str, Any] = {
@@ -378,18 +383,21 @@ class LindormVectorStoreFactory(AbstractVectorFactory):
             raise ValueError("LINDORM_USING_UGC is not set")
         routing_value = None
         if dataset.index_struct:
+            index_struct_dict = dataset.index_struct_dict
+            if index_struct_dict is None:
+                raise ValueError("dataset.index_struct_dict is missing")
             # if an existed record's index_struct_dict doesn't contain using_ugc field,
             # it actually stores in the normal index format
-            stored_in_ugc: bool = dataset.index_struct_dict.get("using_ugc", False)
+            stored_in_ugc: bool = index_struct_dict.get("using_ugc", False)
             using_ugc = stored_in_ugc
             if stored_in_ugc:
-                dimension = dataset.index_struct_dict["dimension"]
-                index_type = dataset.index_struct_dict["index_type"]
-                distance_type = dataset.index_struct_dict["distance_type"]
-                routing_value = dataset.index_struct_dict["vector_store"]["class_prefix"]
+                dimension = index_struct_dict["dimension"]
+                index_type = index_struct_dict["index_type"]
+                distance_type = index_struct_dict["distance_type"]
+                routing_value = index_struct_dict["vector_store"]["class_prefix"]
                 index_name = f"{UGC_INDEX_PREFIX}_{dimension}_{index_type}_{distance_type}".lower()
             else:
-                index_name = dataset.index_struct_dict["vector_store"]["class_prefix"].lower()
+                index_name = index_struct_dict["vector_store"]["class_prefix"].lower()
         else:
             embedding_vector = embeddings.embed_query("hello word")
             dimension = len(embedding_vector)

@@ -4,12 +4,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
 import services.vector_service as vector_service_module
+from core.rag.datasource.vdb.vector_factory import Vector
 from core.rag.index_processor.constant.index_type import IndexStructureType, IndexTechniqueType
+from core.rag.models.document import AttachmentDocument, ChildDocument, Document
 from services.vector_service import VectorService
 
 
@@ -28,6 +30,10 @@ class _ChildDocStub:
 @dataclass
 class _ParentDocStub:
     children: list[_ChildDocStub]
+
+
+def _identity_kwargs(**kwargs: Any) -> dict[str, Any]:
+    return kwargs
 
 
 def _make_dataset(
@@ -414,7 +420,7 @@ def test_generate_child_chunks_regenerate_cleans_then_saves_children(monkeypatch
     factory_instance.init_index_processor.return_value = index_processor
     monkeypatch.setattr(vector_service_module, "IndexProcessorFactory", MagicMock(return_value=factory_instance))
 
-    child_chunk_ctor = MagicMock(side_effect=lambda **kwargs: kwargs)
+    child_chunk_ctor = MagicMock(side_effect=_identity_kwargs)
     monkeypatch.setattr(vector_service_module, "ChildChunk", child_chunk_ctor)
 
     db_mock = MagicMock()
@@ -638,7 +644,7 @@ def test_update_multimodel_vector_adds_bindings_and_vectors_and_skips_missing_up
     db_mock = _mock_db_session_for_update_multimodel(upload_files=[_UploadFileStub(id="file-1", name="img.png")])
     monkeypatch.setattr(vector_service_module, "db", db_mock)
 
-    binding_ctor = MagicMock(side_effect=lambda **kwargs: kwargs)
+    binding_ctor = MagicMock(side_effect=_identity_kwargs)
     monkeypatch.setattr(vector_service_module, "SegmentAttachmentBinding", binding_ctor)
 
     logger_mock = MagicMock()
@@ -670,9 +676,7 @@ def test_update_multimodel_vector_updates_bindings_without_multimodal_vector_ops
     monkeypatch.setattr(vector_service_module, "Vector", MagicMock(return_value=vector_instance))
     db_mock = _mock_db_session_for_update_multimodel(upload_files=[_UploadFileStub(id="file-1", name="img.png")])
     monkeypatch.setattr(vector_service_module, "db", db_mock)
-    monkeypatch.setattr(
-        vector_service_module, "SegmentAttachmentBinding", MagicMock(side_effect=lambda **kwargs: kwargs)
-    )
+    monkeypatch.setattr(vector_service_module, "SegmentAttachmentBinding", MagicMock(side_effect=_identity_kwargs))
 
     VectorService.update_multimodel_vector(segment=segment, attachment_ids=["file-1"], dataset=dataset)
 
@@ -691,9 +695,7 @@ def test_update_multimodel_vector_rolls_back_and_reraises_on_error(monkeypatch: 
     db_mock = _mock_db_session_for_update_multimodel(upload_files=[_UploadFileStub(id="file-1", name="img.png")])
     db_mock.session.commit.side_effect = RuntimeError("boom")
     monkeypatch.setattr(vector_service_module, "db", db_mock)
-    monkeypatch.setattr(
-        vector_service_module, "SegmentAttachmentBinding", MagicMock(side_effect=lambda **kwargs: kwargs)
-    )
+    monkeypatch.setattr(vector_service_module, "SegmentAttachmentBinding", MagicMock(side_effect=_identity_kwargs))
 
     logger_mock = MagicMock()
     monkeypatch.setattr(vector_service_module, "logger", logger_mock)
@@ -703,3 +705,101 @@ def test_update_multimodel_vector_rolls_back_and_reraises_on_error(monkeypatch: 
 
     logger_mock.exception.assert_called_once()
     db_mock.session.rollback.assert_called_once()
+
+
+def test_vector_create_normalizes_child_documents() -> None:
+    dataset = _make_dataset()
+    documents = [ChildDocument(page_content="Child content", metadata={"doc_id": "child-1", "dataset_id": "dataset-1"})]
+
+    mock_embeddings = Mock()
+    mock_embeddings.embed_documents.return_value = [[0.1] * 1536]
+
+    mock_vector_processor = Mock()
+
+    with (
+        patch.object(Vector, "_get_embeddings", return_value=mock_embeddings),
+        patch.object(Vector, "_init_vector", return_value=mock_vector_processor),
+    ):
+        vector = Vector(dataset=dataset)
+
+        vector.create(texts=documents)
+
+    normalized_document = mock_vector_processor.create.call_args.kwargs["texts"][0]
+    assert isinstance(normalized_document, Document)
+    assert normalized_document.page_content == "Child content"
+    assert normalized_document.metadata["doc_id"] == "child-1"
+
+
+@patch("core.rag.datasource.vdb.vector_factory.storage")
+@patch("core.rag.datasource.vdb.vector_factory.db")
+def test_vector_create_multimodal_normalizes_attachment_documents(
+    mock_db: Mock,
+    mock_storage: Mock,
+) -> None:
+    dataset = _make_dataset()
+    file_document = AttachmentDocument(
+        page_content="Attachment content",
+        provider="custom-provider",
+        metadata={"doc_id": "file-1", "doc_type": "image/png"},
+    )
+    upload_file = Mock(id="file-1", key="upload-key")
+
+    mock_scalars = Mock()
+    mock_scalars.all.return_value = [upload_file]
+    mock_db.session.scalars.return_value = mock_scalars
+    mock_storage.load_once.return_value = b"binary-content"
+
+    mock_embeddings = Mock()
+    mock_embeddings.embed_multimodal_documents.return_value = [[0.2] * 1536]
+
+    mock_vector_processor = Mock()
+
+    with (
+        patch.object(Vector, "_get_embeddings", return_value=mock_embeddings),
+        patch.object(Vector, "_init_vector", return_value=mock_vector_processor),
+    ):
+        vector = Vector(dataset=dataset)
+
+        vector.create_multimodal(file_documents=[file_document])
+
+    normalized_document = mock_vector_processor.create.call_args.kwargs["texts"][0]
+    assert isinstance(normalized_document, Document)
+    assert normalized_document.provider == "custom-provider"
+    assert normalized_document.metadata["doc_id"] == "file-1"
+
+
+@patch("core.rag.datasource.vdb.vector_factory.storage")
+@patch("core.rag.datasource.vdb.vector_factory.db")
+def test_vector_create_multimodal_falls_back_to_dify_provider_when_attachment_provider_is_none(
+    mock_db: Mock,
+    mock_storage: Mock,
+) -> None:
+    dataset = _make_dataset()
+    file_document = AttachmentDocument(
+        page_content="Attachment content",
+        provider=None,
+        metadata={"doc_id": "file-1", "doc_type": "image/png"},
+    )
+    upload_file = Mock(id="file-1", key="upload-key")
+
+    mock_scalars = Mock()
+    mock_scalars.all.return_value = [upload_file]
+    mock_db.session.scalars.return_value = mock_scalars
+    mock_storage.load_once.return_value = b"binary-content"
+
+    mock_embeddings = Mock()
+    mock_embeddings.embed_multimodal_documents.return_value = [[0.2] * 1536]
+
+    mock_vector_processor = Mock()
+
+    with (
+        patch.object(Vector, "_get_embeddings", return_value=mock_embeddings),
+        patch.object(Vector, "_init_vector", return_value=mock_vector_processor),
+    ):
+        vector = Vector(dataset=dataset)
+
+        vector.create_multimodal(file_documents=[file_document])
+
+    normalized_document = mock_vector_processor.create.call_args.kwargs["texts"][0]
+    assert isinstance(normalized_document, Document)
+    assert normalized_document.provider == "dify"

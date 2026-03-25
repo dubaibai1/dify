@@ -7,7 +7,7 @@ class ApiKeyAuthFactory:
         auth_factory = self.get_apikey_auth_factory(provider)
         self.auth = auth_factory(credentials)
 
-    def validate_credentials(self):
+    def validate_credentials(self) -> bool:
         return self.auth.validate_credentials()
 
     @staticmethod

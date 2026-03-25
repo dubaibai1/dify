@@ -3,7 +3,7 @@ import datetime
 import logging
 import time
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, Literal, TypedDict
 
 from flask import current_app
 from sqlalchemy import delete, func, select
@@ -19,6 +19,16 @@ from .index_processor_factory import IndexProcessorFactory
 from .processor.paragraph_index_processor import ParagraphIndexProcessor
 
 logger = logging.getLogger(__name__)
+
+
+class IndexAndCleanResult(TypedDict):
+    dataset_id: str
+    dataset_name: str
+    batch: str
+    document_id: str
+    document_name: str
+    created_at: float
+    display_status: Literal["completed"]
 
 
 class IndexProcessor:
@@ -52,9 +62,9 @@ class IndexProcessor:
         document_id: str,
         original_document_id: str,
         chunks: Mapping[str, Any],
-        batch: Any,
+        batch: str,
         summary_index_setting: SummaryIndexSettingDict | None = None,
-    ):
+    ) -> IndexAndCleanResult:
         with session_factory.create_session() as session:
             document = session.query(Document).filter_by(id=document_id).first()
             if not document:

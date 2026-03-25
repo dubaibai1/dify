@@ -14,5 +14,5 @@ class ApiKeyAuthBase(ABC):
         self.credentials = credentials
 
     @abstractmethod
-    def validate_credentials(self):
+    def validate_credentials(self) -> bool:
         raise NotImplementedError
