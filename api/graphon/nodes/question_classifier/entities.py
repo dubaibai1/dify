@@ -9,6 +9,7 @@ from graphon.prompt_entities import MemoryConfig
 class ClassConfig(BaseModel):
     id: str
     name: str
+    label: str | None = None
 
 
 class QuestionClassifierNodeData(BaseNodeData):
