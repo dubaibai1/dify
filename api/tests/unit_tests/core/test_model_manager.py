@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 import redis
 from graphon.model_runtime.entities.model_entities import ModelType
+
 # pyrefly: ignore [missing-import]
 from pytest_mock import MockerFixture
 

@@ -3,6 +3,7 @@ from typing import cast
 
 import pytest
 from graphon.model_runtime.errors.invoke import InvokeBadRequestError
+
 # pyrefly: ignore [missing-import]
 from pytest_mock import MockerFixture
 

@@ -6,6 +6,7 @@ from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import pytest
+
 # pyrefly: ignore [missing-import]
 from pytest_mock import MockerFixture
 

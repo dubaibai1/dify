@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import yaml
+
 # pyrefly: ignore [missing-import]
 from faker import Faker
 
