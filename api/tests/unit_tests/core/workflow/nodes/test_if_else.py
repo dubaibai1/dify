@@ -110,6 +110,7 @@ def test_execute_if_else_result_true():
         id=str(uuid.uuid4()),
         graph_init_params=init_params,
         graph_runtime_state=graph_runtime_state,
+        # pyrefly: ignore [bad-argument-type]
         config=node_config,
     )
 
@@ -180,6 +181,7 @@ def test_execute_if_else_result_false():
         id=str(uuid.uuid4()),
         graph_init_params=init_params,
         graph_runtime_state=graph_runtime_state,
+        # pyrefly: ignore [bad-argument-type]
         config=node_config,
     )
 
@@ -246,6 +248,7 @@ def test_array_file_contains_file_name():
         id=str(uuid.uuid4()),
         graph_init_params=graph_init_params,
         graph_runtime_state=Mock(),
+        # pyrefly: ignore [bad-argument-type]
         config=node_config,
     )
 
@@ -338,6 +341,7 @@ def test_execute_if_else_boolean_conditions(condition: Condition):
         id=str(uuid.uuid4()),
         graph_init_params=init_params,
         graph_runtime_state=graph_runtime_state,
+        # pyrefly: ignore [bad-typed-dict-key]
         config={"id": "if-else", "data": node_data},
     )
 
@@ -406,6 +410,7 @@ def test_execute_if_else_boolean_false_conditions():
         graph_runtime_state=graph_runtime_state,
         config={
             "id": "if-else",
+            # pyrefly: ignore [bad-typed-dict-key]
             "data": node_data,
         },
     )
@@ -476,6 +481,7 @@ def test_execute_if_else_boolean_cases_structure():
         id=str(uuid.uuid4()),
         graph_init_params=init_params,
         graph_runtime_state=graph_runtime_state,
+        # pyrefly: ignore [bad-typed-dict-key]
         config={"id": "if-else", "data": node_data},
     )
 

@@ -40,6 +40,7 @@ def test_node_uses_default_max_output_length_when_not_overridden(graph_init_para
         id="test_node",
         config={
             "id": "test_node",
+            # pyrefly: ignore [bad-typed-dict-key]
             "data": {
                 "title": "Template Transform",
                 "variables": [],

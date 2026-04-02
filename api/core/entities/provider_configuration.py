@@ -369,6 +369,7 @@ class ProviderConfiguration(BaseModel):
 
             for key, value in validated_credentials.items():
                 if key in provider_credential_secret_variables:
+                    # pyrefly: ignore [bad-argument-type]
                     validated_credentials[key] = encrypter.encrypt_token(self.tenant_id, value)
 
             return validated_credentials
@@ -928,6 +929,7 @@ class ProviderConfiguration(BaseModel):
 
             for key, value in validated_credentials.items():
                 if key in provider_credential_secret_variables:
+                    # pyrefly: ignore [bad-argument-type]
                     validated_credentials[key] = encrypter.encrypt_token(self.tenant_id, value)
 
             return validated_credentials

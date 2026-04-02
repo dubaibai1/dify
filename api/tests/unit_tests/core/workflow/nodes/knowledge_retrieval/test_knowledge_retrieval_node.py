@@ -107,6 +107,7 @@ class TestKnowledgeRetrievalNode:
         # Act
         node = KnowledgeRetrievalNode(
             id=node_id,
+            # pyrefly: ignore [bad-argument-type]
             config=config,
             graph_init_params=mock_graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -195,6 +196,7 @@ class TestKnowledgeRetrievalNode:
 
         node = KnowledgeRetrievalNode(
             id=node_id,
+            # pyrefly: ignore [bad-argument-type]
             config=config,
             graph_init_params=mock_graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -471,6 +473,7 @@ class TestFetchDatasetRetriever:
 
         node = KnowledgeRetrievalNode(
             id=node_id,
+            # pyrefly: ignore [bad-argument-type]
             config=config,
             graph_init_params=mock_graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -563,6 +566,7 @@ class TestFetchDatasetRetriever:
 
         node = KnowledgeRetrievalNode(
             id=node_id,
+            # pyrefly: ignore [bad-argument-type]
             config=config,
             graph_init_params=mock_graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -611,6 +615,7 @@ class TestFetchDatasetRetriever:
 
         node = KnowledgeRetrievalNode(
             id=node_id,
+            # pyrefly: ignore [bad-argument-type]
             config=config,
             graph_init_params=mock_graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -630,9 +635,13 @@ class TestFetchDatasetRetriever:
 
         # Assert
         assert resolved.logical_operator == "and"
+        # pyrefly: ignore [unsupported-operation]
         assert resolved.conditions[0].value == "readme"
+        # pyrefly: ignore [unsupported-operation]
         assert isinstance(resolved.conditions[1].value, list)
+        # pyrefly: ignore [unsupported-operation]
         assert resolved.conditions[1].value[1] == "readme"
+        # pyrefly: ignore [unsupported-operation]
         assert resolved.conditions[2].value == 2025
 
     def test_fetch_passes_resolved_metadata_conditions(
@@ -672,6 +681,7 @@ class TestFetchDatasetRetriever:
         config = {"id": node_id, "data": node_data.model_dump()}
         node = KnowledgeRetrievalNode(
             id=node_id,
+            # pyrefly: ignore [bad-argument-type]
             config=config,
             graph_init_params=mock_graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,

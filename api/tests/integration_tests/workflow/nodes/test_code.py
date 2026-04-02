@@ -65,6 +65,7 @@ def init_code_node(code_config: dict):
 
     node = CodeNode(
         id=str(uuid.uuid4()),
+        # pyrefly: ignore [bad-argument-type]
         config=code_config,
         graph_init_params=init_params,
         graph_runtime_state=graph_runtime_state,

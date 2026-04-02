@@ -141,6 +141,7 @@ def _build_graph(runtime_state: GraphRuntimeState, repo: HumanInputFormRepositor
     start_config = {"id": "start", "data": StartNodeData(title="Start", variables=[]).model_dump()}
     start_node = StartNode(
         id=start_config["id"],
+        # pyrefly: ignore [bad-argument-type]
         config=start_config,
         graph_init_params=graph_init_params,
         graph_runtime_state=runtime_state,
@@ -156,6 +157,7 @@ def _build_graph(runtime_state: GraphRuntimeState, repo: HumanInputFormRepositor
     human_a_config = {"id": "human_a", "data": human_data.model_dump()}
     human_a = HumanInputNode(
         id=human_a_config["id"],
+        # pyrefly: ignore [bad-argument-type]
         config=human_a_config,
         graph_init_params=graph_init_params,
         graph_runtime_state=runtime_state,
@@ -166,6 +168,7 @@ def _build_graph(runtime_state: GraphRuntimeState, repo: HumanInputFormRepositor
     human_b_config = {"id": "human_b", "data": human_data.model_dump()}
     human_b = HumanInputNode(
         id=human_b_config["id"],
+        # pyrefly: ignore [bad-argument-type]
         config=human_b_config,
         graph_init_params=graph_init_params,
         graph_runtime_state=runtime_state,
@@ -184,6 +187,7 @@ def _build_graph(runtime_state: GraphRuntimeState, repo: HumanInputFormRepositor
     end_config = {"id": "end", "data": end_data.model_dump()}
     end_node = EndNode(
         id=end_config["id"],
+        # pyrefly: ignore [bad-argument-type]
         config=end_config,
         graph_init_params=graph_init_params,
         graph_runtime_state=runtime_state,

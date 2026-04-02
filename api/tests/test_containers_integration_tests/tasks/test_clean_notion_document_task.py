@@ -10,6 +10,7 @@ import uuid
 from unittest.mock import Mock, patch
 
 import pytest
+# pyrefly: ignore [missing-import]
 from faker import Faker
 
 from core.rag.index_processor.constant.index_type import IndexStructureType
@@ -87,6 +88,7 @@ class TestCleanNotionDocumentTask:
         # Create dataset
         dataset = Dataset(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             name=fake.company(),
             description=fake.text(max_nb_chars=100),
@@ -104,6 +106,7 @@ class TestCleanNotionDocumentTask:
         for i in range(3):
             document = Document(
                 id=str(uuid.uuid4()),
+                # pyrefly: ignore [missing-attribute]
                 tenant_id=tenant.id,
                 dataset_id=dataset.id,
                 position=i,
@@ -127,6 +130,7 @@ class TestCleanNotionDocumentTask:
             for j in range(2):
                 segment = DocumentSegment(
                     id=str(uuid.uuid4()),
+                    # pyrefly: ignore [missing-attribute]
                     tenant_id=tenant.id,
                     dataset_id=dataset.id,
                     document_id=document.id,
@@ -219,6 +223,7 @@ class TestCleanNotionDocumentTask:
         # Create dataset
         dataset = Dataset(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             name=fake.company(),
             description=fake.text(max_nb_chars=100),
@@ -268,6 +273,7 @@ class TestCleanNotionDocumentTask:
             # Create dataset (doc_form will be set via document creation)
             dataset = Dataset(
                 id=str(uuid.uuid4()),
+                # pyrefly: ignore [missing-attribute]
                 tenant_id=tenant.id,
                 name=f"{fake.company()}_{index_type}",
                 description=fake.text(max_nb_chars=100),
@@ -280,6 +286,7 @@ class TestCleanNotionDocumentTask:
             # Create a test document with specific doc_form
             document = Document(
                 id=str(uuid.uuid4()),
+                # pyrefly: ignore [missing-attribute]
                 tenant_id=tenant.id,
                 dataset_id=dataset.id,
                 position=0,
@@ -301,6 +308,7 @@ class TestCleanNotionDocumentTask:
             # Create test segment
             segment = DocumentSegment(
                 id=str(uuid.uuid4()),
+                # pyrefly: ignore [missing-attribute]
                 tenant_id=tenant.id,
                 dataset_id=dataset.id,
                 document_id=document.id,
@@ -356,6 +364,7 @@ class TestCleanNotionDocumentTask:
         # Create dataset
         dataset = Dataset(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             name=fake.company(),
             description=fake.text(max_nb_chars=100),
@@ -368,6 +377,7 @@ class TestCleanNotionDocumentTask:
         # Create document
         document = Document(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             dataset_id=dataset.id,
             position=0,
@@ -390,6 +400,7 @@ class TestCleanNotionDocumentTask:
         for i in range(3):
             segment = DocumentSegment(
                 id=str(uuid.uuid4()),
+                # pyrefly: ignore [missing-attribute]
                 tenant_id=tenant.id,
                 dataset_id=dataset.id,
                 document_id=document.id,
@@ -442,6 +453,7 @@ class TestCleanNotionDocumentTask:
         # Create dataset
         dataset = Dataset(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             name=fake.company(),
             description=fake.text(max_nb_chars=100),
@@ -459,6 +471,7 @@ class TestCleanNotionDocumentTask:
         for i in range(5):
             document = Document(
                 id=str(uuid.uuid4()),
+                # pyrefly: ignore [missing-attribute]
                 tenant_id=tenant.id,
                 dataset_id=dataset.id,
                 position=i,
@@ -481,6 +494,7 @@ class TestCleanNotionDocumentTask:
             for j in range(2):
                 segment = DocumentSegment(
                     id=str(uuid.uuid4()),
+                    # pyrefly: ignore [missing-attribute]
                     tenant_id=tenant.id,
                     dataset_id=dataset.id,
                     document_id=document.id,
@@ -557,6 +571,7 @@ class TestCleanNotionDocumentTask:
         # Create dataset
         dataset = Dataset(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             name=fake.company(),
             description=fake.text(max_nb_chars=100),
@@ -569,6 +584,7 @@ class TestCleanNotionDocumentTask:
         # Create document
         document = Document(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             dataset_id=dataset.id,
             position=0,
@@ -594,6 +610,7 @@ class TestCleanNotionDocumentTask:
         for i, status in enumerate(segment_statuses):
             segment = DocumentSegment(
                 id=str(uuid.uuid4()),
+                # pyrefly: ignore [missing-attribute]
                 tenant_id=tenant.id,
                 dataset_id=dataset.id,
                 document_id=document.id,
@@ -653,6 +670,7 @@ class TestCleanNotionDocumentTask:
         # Create dataset
         dataset = Dataset(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             name=fake.company(),
             description=fake.text(max_nb_chars=100),
@@ -665,6 +683,7 @@ class TestCleanNotionDocumentTask:
         # Create document
         document = Document(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             dataset_id=dataset.id,
             position=0,
@@ -685,6 +704,7 @@ class TestCleanNotionDocumentTask:
         # Create segment
         segment = DocumentSegment(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             dataset_id=dataset.id,
             document_id=document.id,
@@ -735,6 +755,7 @@ class TestCleanNotionDocumentTask:
         # Create dataset
         dataset = Dataset(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             name=fake.company(),
             description=fake.text(max_nb_chars=100),
@@ -753,6 +774,7 @@ class TestCleanNotionDocumentTask:
         for i in range(num_documents):
             document = Document(
                 id=str(uuid.uuid4()),
+                # pyrefly: ignore [missing-attribute]
                 tenant_id=tenant.id,
                 dataset_id=dataset.id,
                 position=i,
@@ -776,6 +798,7 @@ class TestCleanNotionDocumentTask:
             for j in range(num_segments_per_doc):
                 segment = DocumentSegment(
                     id=str(uuid.uuid4()),
+                    # pyrefly: ignore [missing-attribute]
                     tenant_id=tenant.id,
                     dataset_id=dataset.id,
                     document_id=document.id,
@@ -800,6 +823,7 @@ class TestCleanNotionDocumentTask:
         )
         assert (
             db_session_with_containers.query(DocumentSegment).filter(DocumentSegment.dataset_id == dataset.id).count()
+            # pyrefly: ignore [unbound-name]
             == num_documents * num_segments_per_doc
         )
 
@@ -847,6 +871,7 @@ class TestCleanNotionDocumentTask:
             # Create dataset for each tenant
             dataset = Dataset(
                 id=str(uuid.uuid4()),
+                # pyrefly: ignore [missing-attribute]
                 tenant_id=tenant.id,
                 name=f"{fake.company()}_{i}",
                 description=fake.text(max_nb_chars=100),
@@ -865,6 +890,7 @@ class TestCleanNotionDocumentTask:
         for i, (dataset, account) in enumerate(zip(datasets, accounts)):
             document = Document(
                 id=str(uuid.uuid4()),
+                # pyrefly: ignore [missing-attribute]
                 tenant_id=account.current_tenant.id,
                 dataset_id=dataset.id,
                 position=0,
@@ -887,6 +913,7 @@ class TestCleanNotionDocumentTask:
             for j in range(3):
                 segment = DocumentSegment(
                     id=str(uuid.uuid4()),
+                    # pyrefly: ignore [missing-attribute]
                     tenant_id=account.current_tenant.id,
                     dataset_id=dataset.id,
                     document_id=document.id,
@@ -962,6 +989,7 @@ class TestCleanNotionDocumentTask:
         # Create dataset
         dataset = Dataset(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             name=fake.company(),
             description=fake.text(max_nb_chars=100),
@@ -988,6 +1016,7 @@ class TestCleanNotionDocumentTask:
         for i, status in enumerate(document_statuses):
             document = Document(
                 id=str(uuid.uuid4()),
+                # pyrefly: ignore [missing-attribute]
                 tenant_id=tenant.id,
                 dataset_id=dataset.id,
                 position=i,
@@ -1010,6 +1039,7 @@ class TestCleanNotionDocumentTask:
             for j in range(2):
                 segment = DocumentSegment(
                     id=str(uuid.uuid4()),
+                    # pyrefly: ignore [missing-attribute]
                     tenant_id=tenant.id,
                     dataset_id=dataset.id,
                     document_id=document.id,
@@ -1073,6 +1103,7 @@ class TestCleanNotionDocumentTask:
         # Create dataset with built-in fields enabled
         dataset = Dataset(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             name=fake.company(),
             description=fake.text(max_nb_chars=100),
@@ -1086,6 +1117,7 @@ class TestCleanNotionDocumentTask:
         # Create document with rich metadata
         document = Document(
             id=str(uuid.uuid4()),
+            # pyrefly: ignore [missing-attribute]
             tenant_id=tenant.id,
             dataset_id=dataset.id,
             position=0,
@@ -1123,6 +1155,7 @@ class TestCleanNotionDocumentTask:
         for i in range(3):
             segment = DocumentSegment(
                 id=str(uuid.uuid4()),
+                # pyrefly: ignore [missing-attribute]
                 tenant_id=tenant.id,
                 dataset_id=dataset.id,
                 document_id=document.id,

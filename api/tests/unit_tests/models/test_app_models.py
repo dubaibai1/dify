@@ -1290,9 +1290,13 @@ class TestConversationStatusCount:
             assert "IN" in calls_made[1]  # Batch loading with IN clause
 
             # Verify correct status counts
+            # pyrefly: ignore [unsupported-operation]
             assert result["success"] == 1  # One SUCCEEDED
+            # pyrefly: ignore [unsupported-operation]
             assert result["failed"] == 1  # One FAILED
+            # pyrefly: ignore [unsupported-operation]
             assert result["partial_success"] == 1  # One PARTIAL_SUCCEEDED
+            # pyrefly: ignore [unsupported-operation]
             assert result["paused"] == 0
 
     def test_status_count_app_id_filtering(self):
@@ -1345,9 +1349,13 @@ class TestConversationStatusCount:
             assert "app_id" in workflow_query
 
             # Since workflow run has wrong app_id, it shouldn't be included in counts
+            # pyrefly: ignore [unsupported-operation]
             assert result["success"] == 0
+            # pyrefly: ignore [unsupported-operation]
             assert result["failed"] == 0
+            # pyrefly: ignore [unsupported-operation]
             assert result["partial_success"] == 0
+            # pyrefly: ignore [unsupported-operation]
             assert result["paused"] == 0
 
     def test_status_count_handles_invalid_workflow_status(self):
@@ -1400,9 +1408,13 @@ class TestConversationStatusCount:
             result = conversation.status_count
 
             # Assert - should handle invalid status gracefully
+            # pyrefly: ignore [unsupported-operation]
             assert result["success"] == 0
+            # pyrefly: ignore [unsupported-operation]
             assert result["failed"] == 0
+            # pyrefly: ignore [unsupported-operation]
             assert result["partial_success"] == 0
+            # pyrefly: ignore [unsupported-operation]
             assert result["paused"] == 0
 
     def test_status_count_paused(self):
@@ -1456,4 +1468,5 @@ class TestConversationStatusCount:
             result = conversation.status_count
 
             # Assert
+            # pyrefly: ignore [unsupported-operation]
             assert result["paused"] == 1

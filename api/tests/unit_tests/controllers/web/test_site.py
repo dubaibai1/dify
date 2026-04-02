@@ -123,4 +123,5 @@ class TestAppSiteInfo:
 
         assert info.can_replace_logo is True
         assert info.custom_config["remove_webapp_brand"] is True
+        # pyrefly: ignore [not-iterable]
         assert "webapp-logo" in info.custom_config["replace_webapp_logo"]

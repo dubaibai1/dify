@@ -18,6 +18,7 @@ from graphon.enums import (
     WorkflowNodeExecutionStatus,
 )
 from graphon.model_runtime.utils.encoders import jsonable_encoder
+# pyrefly: ignore [missing-import]
 from pytest_mock import MockerFixture
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -295,6 +296,7 @@ def test_to_domain_model(repository):
     db_model.tenant_id = "test-tenant-id"
     db_model.app_id = "test-app-id"
     db_model.workflow_id = "test-workflow-id"
+    # pyrefly: ignore [bad-argument-type]
     db_model.triggered_from = "workflow-run"
     db_model.workflow_run_id = "test-workflow-run-id"
     db_model.index = 1
@@ -311,6 +313,7 @@ def test_to_domain_model(repository):
     db_model.elapsed_time = 1.5
     db_model.execution_metadata = json.dumps(metadata_dict)
     db_model.created_at = datetime.now()
+    # pyrefly: ignore [bad-argument-type]
     db_model.created_by_role = "account"
     db_model.created_by = "test-user-id"
     db_model.finished_at = None

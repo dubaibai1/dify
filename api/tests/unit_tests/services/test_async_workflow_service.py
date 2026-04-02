@@ -154,6 +154,7 @@ class TestAsyncWorkflowService:
             user = DummyAccount("account-123")
 
             # Act
+            # pyrefly: ignore [bad-argument-type]
             result = AsyncWorkflowService.trigger_workflow_async(session=session, user=user, trigger_data=trigger_data)
 
         # Assert
@@ -208,6 +209,7 @@ class TestAsyncWorkflowService:
         user = SimpleNamespace(id="end-user-123")
 
         # Act
+        # pyrefly: ignore [bad-argument-type]
         AsyncWorkflowService.trigger_workflow_async(session=session, user=user, trigger_data=trigger_data)
 
         # Assert
@@ -231,6 +233,7 @@ class TestAsyncWorkflowService:
             with pytest.raises(WorkflowNotFoundError, match="App not found: missing-app"):
                 AsyncWorkflowService.trigger_workflow_async(
                     session=session,
+                    # pyrefly: ignore [bad-argument-type]
                     user=SimpleNamespace(id="user-123"),
                     trigger_data=trigger_data,
                 )
@@ -263,6 +266,7 @@ class TestAsyncWorkflowService:
         ):
             AsyncWorkflowService.trigger_workflow_async(
                 session=session,
+                # pyrefly: ignore [bad-argument-type]
                 user=SimpleNamespace(id="user-123"),
                 trigger_data=trigger_data,
             )
@@ -287,6 +291,7 @@ class TestAsyncWorkflowService:
             with pytest.raises(ValueError, match="Trigger log not found: missing-log"):
                 AsyncWorkflowService.reinvoke_trigger(
                     session=session,
+                    # pyrefly: ignore [bad-argument-type]
                     user=SimpleNamespace(id="user-123"),
                     workflow_trigger_log_id="missing-log",
                 )
@@ -320,6 +325,7 @@ class TestAsyncWorkflowService:
             # Act
             response = AsyncWorkflowService.reinvoke_trigger(
                 session=session,
+                # pyrefly: ignore [bad-argument-type]
                 user=user,
                 workflow_trigger_log_id="trigger-log-123",
             )

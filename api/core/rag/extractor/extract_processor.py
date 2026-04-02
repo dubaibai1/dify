@@ -113,6 +113,7 @@ class ExtractProcessor:
                     if file_extension in {".xlsx", ".xls"}:
                         extractor = ExcelExtractor(file_path)
                     elif file_extension == ".pdf":
+                        # pyrefly: ignore [unbound-name]
                         extractor = PdfExtractor(file_path, upload_file.tenant_id, upload_file.created_by)
                     elif file_extension in {".md", ".markdown", ".mdx"}:
                         extractor = (
@@ -123,6 +124,7 @@ class ExtractProcessor:
                     elif file_extension in {".htm", ".html"}:
                         extractor = HtmlExtractor(file_path)
                     elif file_extension == ".docx":
+                        # pyrefly: ignore [unbound-name]
                         extractor = WordExtractor(file_path, upload_file.tenant_id, upload_file.created_by)
                     elif file_extension == ".doc":
                         extractor = UnstructuredWordExtractor(file_path, unstructured_api_url, unstructured_api_key)
@@ -149,12 +151,14 @@ class ExtractProcessor:
                     if file_extension in {".xlsx", ".xls"}:
                         extractor = ExcelExtractor(file_path)
                     elif file_extension == ".pdf":
+                        # pyrefly: ignore [unbound-name]
                         extractor = PdfExtractor(file_path, upload_file.tenant_id, upload_file.created_by)
                     elif file_extension in {".md", ".markdown", ".mdx"}:
                         extractor = MarkdownExtractor(file_path, autodetect_encoding=True)
                     elif file_extension in {".htm", ".html"}:
                         extractor = HtmlExtractor(file_path)
                     elif file_extension == ".docx":
+                        # pyrefly: ignore [unbound-name]
                         extractor = WordExtractor(file_path, upload_file.tenant_id, upload_file.created_by)
                     elif file_extension == ".csv":
                         extractor = CSVExtractor(file_path, autodetect_encoding=True)

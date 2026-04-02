@@ -160,7 +160,9 @@ class TestOpenSearchVector:
             self.vector.add_texts([doc], [embedding])
 
         ids = self.vector.get_ids_by_metadata_field(key="document_id", value=self.example_doc_id)
+        # pyrefly: ignore [bad-argument-type]
         assert len(ids) == 1
+        # pyrefly: ignore [unsupported-operation]
         assert ids[0] == "mock_id"
 
     def test_add_texts(self):
@@ -177,7 +179,9 @@ class TestOpenSearchVector:
         self.vector._client.search.return_value = mock_response
 
         ids = self.vector.get_ids_by_metadata_field(key="document_id", value=self.example_doc_id)
+        # pyrefly: ignore [bad-argument-type]
         assert len(ids) == 1
+        # pyrefly: ignore [unsupported-operation]
         assert ids[0] == "mock_id"
 
     def test_delete_nonexistent_index(self):

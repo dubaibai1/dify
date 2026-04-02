@@ -427,10 +427,14 @@ class TestHitTestingServiceExternalRetrieve:
             )
 
             # Assert
+            # pyrefly: ignore [bad-index]
             assert result["query"]["content"] == query
             assert len(result["records"]) == 2
+            # pyrefly: ignore [bad-index]
             assert result["records"][0]["content"] == "External doc 1"
+            # pyrefly: ignore [bad-index]
             assert result["records"][0]["title"] == "Title 1"
+            # pyrefly: ignore [bad-index]
             assert result["records"][0]["score"] == 0.95
             mock_external_retrieve.assert_called_once()
             # Verify query was escaped
@@ -458,6 +462,7 @@ class TestHitTestingServiceExternalRetrieve:
         )
 
         # Assert
+        # pyrefly: ignore [bad-index]
         assert result["query"]["content"] == query
         assert result["records"] == []
         mock_db_session.add.assert_not_called()
@@ -493,6 +498,7 @@ class TestHitTestingServiceExternalRetrieve:
             )
 
             # Assert
+            # pyrefly: ignore [bad-index]
             assert result["query"]["content"] == query
             assert len(result["records"]) == 1
             call_kwargs = mock_external_retrieve.call_args[1]
@@ -527,6 +533,7 @@ class TestHitTestingServiceExternalRetrieve:
             )
 
             # Assert
+            # pyrefly: ignore [bad-index]
             assert result["query"]["content"] == query
             assert result["records"] == []
 

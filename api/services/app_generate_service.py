@@ -162,6 +162,7 @@ class AppGenerateService:
                         payload_json = payload.model_dump_json()
 
                     def on_subscribe():
+                        # pyrefly: ignore [not-callable]
                         workflow_based_app_execution_task.delay(payload_json)
 
                     on_subscribe = cls._build_streaming_task_on_subscribe(on_subscribe)
@@ -213,6 +214,7 @@ class AppGenerateService:
                         payload_json = payload.model_dump_json()
 
                     def on_subscribe():
+                        # pyrefly: ignore [not-callable]
                         workflow_based_app_execution_task.delay(payload_json)
 
                     on_subscribe = cls._build_streaming_task_on_subscribe(on_subscribe)

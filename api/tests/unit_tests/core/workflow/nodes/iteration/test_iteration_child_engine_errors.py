@@ -47,6 +47,7 @@ def _build_iteration_node(
         id="iteration-node",
         config={
             "id": "iteration-node",
+            # pyrefly: ignore [bad-typed-dict-key]
             "data": {
                 "type": "iteration",
                 "title": "Iteration",

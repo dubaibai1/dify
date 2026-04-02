@@ -84,6 +84,7 @@ class TestOpsService:
         result = OpsService.get_tracing_app_config("app_id", provider)
 
         # Assert
+        # pyrefly: ignore [unsupported-operation]
         assert result["tracing_config"]["project_url"] == default_url
 
     @patch("services.ops_service.db")
@@ -109,6 +110,7 @@ class TestOpsService:
         result = OpsService.get_tracing_app_config("app_id", provider)
 
         # Assert
+        # pyrefly: ignore [unsupported-operation]
         assert result["tracing_config"]["project_url"] == "success_url"
 
     @patch("services.ops_service.db")
@@ -131,6 +133,7 @@ class TestOpsService:
         result = OpsService.get_tracing_app_config("app_id", "langfuse")
 
         # Assert
+        # pyrefly: ignore [unsupported-operation]
         assert result["tracing_config"]["project_url"] == "https://api.langfuse.com/project/key"
 
     @patch("services.ops_service.db")
@@ -153,6 +156,7 @@ class TestOpsService:
         result = OpsService.get_tracing_app_config("app_id", "langfuse")
 
         # Assert
+        # pyrefly: ignore [unsupported-operation]
         assert result["tracing_config"]["project_url"] == "https://api.langfuse.com/"
 
     @patch("services.ops_service.db")

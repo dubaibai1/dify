@@ -29,6 +29,7 @@ class FunctionCallMultiDatasetRouter:
                 SystemPromptMessage(content="You are a helpful AI assistant."),
                 UserPromptMessage(content=query),
             ]
+            # pyrefly: ignore [no-matching-overload]
             result: LLMResult = model_instance.invoke_llm(
                 prompt_messages=prompt_messages,
                 tools=dataset_tools,

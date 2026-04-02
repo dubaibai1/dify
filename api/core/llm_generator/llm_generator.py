@@ -71,6 +71,7 @@ class LLMGenerator:
         prompts = [UserPromptMessage(content=prompt)]
 
         with measure_time() as timer:
+            # pyrefly: ignore [no-matching-overload]
             response: LLMResult = model_instance.invoke_llm(
                 prompt_messages=list(prompts), model_parameters={"max_tokens": 500, "temperature": 1}, stream=False
             )
@@ -134,6 +135,7 @@ class LLMGenerator:
         questions: Sequence[str] = []
 
         try:
+            # pyrefly: ignore [no-matching-overload]
             response: LLMResult = model_instance.invoke_llm(
                 prompt_messages=list(prompt_messages),
                 model_parameters={
@@ -183,6 +185,7 @@ class LLMGenerator:
             )
 
             try:
+                # pyrefly: ignore [no-matching-overload]
                 response: LLMResult = model_instance.invoke_llm(
                     prompt_messages=list(prompt_messages), model_parameters=model_parameters, stream=False
                 )
@@ -231,6 +234,7 @@ class LLMGenerator:
         try:
             try:
                 # the first step to generate the task prompt
+                # pyrefly: ignore [no-matching-overload]
                 prompt_content: LLMResult = model_instance.invoke_llm(
                     prompt_messages=list(prompt_messages), model_parameters=model_parameters, stream=False
                 )
@@ -262,6 +266,7 @@ class LLMGenerator:
             statement_messages = [UserPromptMessage(content=statement_generate_prompt)]
 
             try:
+                # pyrefly: ignore [no-matching-overload]
                 parameter_content: LLMResult = model_instance.invoke_llm(
                     prompt_messages=list(parameter_messages), model_parameters=model_parameters, stream=False
                 )
@@ -271,6 +276,7 @@ class LLMGenerator:
                 error_step = "generate variables"
 
             try:
+                # pyrefly: ignore [no-matching-overload]
                 statement_content: LLMResult = model_instance.invoke_llm(
                     prompt_messages=list(statement_messages), model_parameters=model_parameters, stream=False
                 )
@@ -318,6 +324,7 @@ class LLMGenerator:
         prompt_messages = [UserPromptMessage(content=prompt)]
         model_parameters = args.model_config_data.completion_params
         try:
+            # pyrefly: ignore [no-matching-overload]
             response: LLMResult = model_instance.invoke_llm(
                 prompt_messages=list(prompt_messages), model_parameters=model_parameters, stream=False
             )
@@ -378,6 +385,7 @@ class LLMGenerator:
         model_parameters = args.model_config_data.completion_params
 
         try:
+            # pyrefly: ignore [no-matching-overload]
             response: LLMResult = model_instance.invoke_llm(
                 prompt_messages=list(prompt_messages), model_parameters=model_parameters, stream=False
             )
@@ -566,6 +574,7 @@ class LLMGenerator:
         model_parameters = {"temperature": 0.4}
 
         try:
+            # pyrefly: ignore [no-matching-overload]
             response: LLMResult = model_instance.invoke_llm(
                 prompt_messages=list(prompt_messages), model_parameters=model_parameters, stream=False
             )

@@ -88,9 +88,11 @@ def test_execute_template_transform():
 
     node = TemplateTransformNode(
         id=str(uuid.uuid4()),
+        # pyrefly: ignore [bad-argument-type]
         config=config,
         graph_init_params=init_params,
         graph_runtime_state=graph_runtime_state,
+        # pyrefly: ignore [bad-argument-type]
         jinja2_template_renderer=_SimpleJinja2Renderer(),
     )
 

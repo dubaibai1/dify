@@ -16,6 +16,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
+# pyrefly: ignore [missing-import]
 from faker import Faker
 from sqlalchemy.orm import Session
 
@@ -97,6 +98,7 @@ class TestBatchCreateSegmentToIndexTask:
             email=fake.email(),
             name=fake.name(),
             interface_language="en-US",
+            # pyrefly: ignore [bad-argument-type]
             status="active",
         )
 
@@ -106,6 +108,7 @@ class TestBatchCreateSegmentToIndexTask:
         # Create tenant for the account
         tenant = Tenant(
             name=fake.company(),
+            # pyrefly: ignore [bad-argument-type]
             status="normal",
         )
         db_session_with_containers.add(tenant)
@@ -313,6 +316,7 @@ class TestBatchCreateSegmentToIndexTask:
 
         # Check that document word count was updated
         db_session_with_containers.refresh(document)
+        # pyrefly: ignore [unsupported-operation]
         assert document.word_count > 0
 
         # Verify vector service was called
@@ -705,6 +709,7 @@ class TestBatchCreateSegmentToIndexTask:
 
         # Check that document word count was updated
         db_session_with_containers.refresh(document)
+        # pyrefly: ignore [unsupported-operation]
         assert document.word_count > 0
 
         # Verify vector service was called

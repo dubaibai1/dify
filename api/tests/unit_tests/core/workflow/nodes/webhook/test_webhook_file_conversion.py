@@ -57,17 +57,21 @@ def create_webhook_node(
 
     node = TriggerWebhookNode(
         id="webhook-node-1",
+        # pyrefly: ignore [bad-argument-type]
         config=node_config,
         graph_init_params=graph_init_params,
         graph_runtime_state=runtime_state,
     )
 
     # Attach a lightweight app_config onto runtime state for tenant lookups
+    # pyrefly: ignore [missing-attribute]
     runtime_state.app_config = Mock()
+    # pyrefly: ignore [missing-attribute]
     runtime_state.app_config.tenant_id = tenant_id
 
     # Provide compatibility alias expected by node implementation
     # Some nodes reference `self.node_id`; expose it as an alias to `self.id` for tests
+    # pyrefly: ignore [missing-attribute]
     node.node_id = node.id
 
     return node

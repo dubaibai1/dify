@@ -54,7 +54,9 @@ def test_convert_stream_full_response():
     result = list(WorkflowAppGenerateResponseConverter.convert_stream_full_response(stream()))
 
     assert result[0] == "ping"
+    # pyrefly: ignore [bad-index]
     assert result[1]["event"] == "error"
+    # pyrefly: ignore [bad-index]
     assert result[1]["code"] == "invalid_param"
 
 
@@ -106,7 +108,11 @@ def test_convert_stream_simple_response_node_ignore_details():
 
     result = list(WorkflowAppGenerateResponseConverter.convert_stream_simple_response(stream()))
 
+    # pyrefly: ignore [bad-index]
     assert result[0]["event"] == "node_started"
+    # pyrefly: ignore [bad-index]
     assert result[0]["data"]["inputs"] is None
+    # pyrefly: ignore [bad-index]
     assert result[1]["event"] == "node_finished"
+    # pyrefly: ignore [bad-index]
     assert result[1]["data"]["inputs"] is None

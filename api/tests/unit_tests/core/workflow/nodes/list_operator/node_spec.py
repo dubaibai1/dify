@@ -66,6 +66,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -111,6 +112,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -142,6 +144,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -171,6 +174,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -200,6 +204,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -228,6 +233,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -256,6 +262,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -284,6 +291,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -319,6 +327,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -343,6 +352,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -368,6 +378,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -398,6 +409,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -427,6 +439,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -456,6 +469,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -485,6 +499,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -513,6 +528,7 @@ class TestListOperatorNode:
 
         node = ListOperatorNode(
             id="test",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test", "data": config},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,

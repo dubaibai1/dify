@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
 import pytest
+# pyrefly: ignore [missing-import]
 from faker import Faker
 
 from core.rag.index_processor.constant.index_type import IndexStructureType, IndexTechniqueType
@@ -71,6 +72,7 @@ class TestCreateSegmentToIndexTask:
             email=fake.email(),
             name=fake.name(),
             interface_language="en-US",
+            # pyrefly: ignore [bad-argument-type]
             status="active",
         )
 
@@ -80,6 +82,7 @@ class TestCreateSegmentToIndexTask:
         # Create tenant
         tenant = Tenant(
             name=fake.company(),
+            # pyrefly: ignore [bad-argument-type]
             status="normal",
             plan="basic",
         )

@@ -857,6 +857,7 @@ def test_to_schedule_config_should_build_from_cron_mode() -> None:
     }
 
     # Act
+    # pyrefly: ignore [bad-argument-type]
     result = ScheduleService.to_schedule_config(node_config=node_config)
 
     # Assert
@@ -871,6 +872,7 @@ def test_to_schedule_config_should_raise_for_cron_mode_without_expression() -> N
 
     # Act / Assert
     with pytest.raises(ScheduleConfigError, match="Cron expression is required for cron mode"):
+        # pyrefly: ignore [bad-argument-type]
         ScheduleService.to_schedule_config(node_config=node_config)
 
 
@@ -888,6 +890,7 @@ def test_to_schedule_config_should_build_from_visual_mode(monkeypatch: pytest.Mo
     monkeypatch.setattr(ScheduleService, "visual_to_cron", MagicMock(return_value="30 9 * * *"))
 
     # Act
+    # pyrefly: ignore [bad-argument-type]
     result = ScheduleService.to_schedule_config(node_config=node_config)
 
     # Assert
@@ -900,6 +903,7 @@ def test_to_schedule_config_should_raise_for_invalid_mode() -> None:
 
     # Act / Assert
     with pytest.raises(ScheduleConfigError, match="Invalid schedule mode: manual"):
+        # pyrefly: ignore [bad-argument-type]
         ScheduleService.to_schedule_config(node_config=node_config)
 
 

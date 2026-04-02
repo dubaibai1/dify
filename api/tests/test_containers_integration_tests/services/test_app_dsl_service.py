@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import yaml
+# pyrefly: ignore [missing-import]
 from faker import Faker
 
 from models.model import App, AppModelConfig
@@ -109,6 +110,7 @@ class TestAppDslService:
 
             # Create app
             app_service = AppService()
+            # pyrefly: ignore [missing-attribute]
             app = app_service.create_app(tenant.id, app_args, account)
 
             return app, account
@@ -243,6 +245,7 @@ class TestAppDslService:
                 }
             ),
             pre_prompt="You are a helpful assistant.",
+            # pyrefly: ignore [bad-argument-type]
             prompt_type="simple",
             created_by=account.id,
             updated_by=account.id,
@@ -287,6 +290,7 @@ class TestAppDslService:
         app, account = self._create_test_app_and_account(db_session_with_containers, mock_external_service_dependencies)
 
         # Update app to workflow mode
+        # pyrefly: ignore [bad-argument-type]
         app.mode = "workflow"
         db_session_with_containers.commit()
 
@@ -335,6 +339,7 @@ class TestAppDslService:
         app, account = self._create_test_app_and_account(db_session_with_containers, mock_external_service_dependencies)
 
         # Update app to workflow mode
+        # pyrefly: ignore [bad-argument-type]
         app.mode = "workflow"
         db_session_with_containers.commit()
 
@@ -392,6 +397,7 @@ class TestAppDslService:
         app, account = self._create_test_app_and_account(db_session_with_containers, mock_external_service_dependencies)
 
         # Update app to workflow mode
+        # pyrefly: ignore [bad-argument-type]
         app.mode = "workflow"
         db_session_with_containers.commit()
 

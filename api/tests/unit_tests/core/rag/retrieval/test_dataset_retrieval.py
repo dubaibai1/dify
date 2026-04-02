@@ -1948,6 +1948,7 @@ class TestDocumentModel:
         doc = Document(page_content="Test content", vector=vector)
 
         assert doc.vector == vector
+        # pyrefly: ignore [bad-argument-type]
         assert len(doc.vector) == 5
 
     def test_document_with_external_provider(self):
@@ -2768,7 +2769,9 @@ class TestProcessMetadataFilterFunc:
         mock_metadata_field.__getitem__ = MagicMock(side_effect=getitem_side_effect)
         mock_metadata_field.as_string.return_value = mock_string_access
         mock_metadata_field.as_float.return_value = mock_float_access
+        # pyrefly: ignore [unknown-name]
         mock_metadata_field[metadata_name:str].is_ = mock_null_access.is_
+        # pyrefly: ignore [unknown-name]
         mock_metadata_field[metadata_name:str].isnot = mock_null_access.isnot
 
         return mock_metadata_field
@@ -3781,10 +3784,12 @@ class TestDatasetRetrievalAdditionalHelpers:
                 usage=None,
             ),
         )
+        # pyrefly: ignore [bad-argument-type]
         text, returned_usage = retrieval._handle_invoke_result(iter([chunk_1, chunk_2]))
         assert text == "hello world"
         assert returned_usage == usage
 
+        # pyrefly: ignore [bad-argument-type]
         text_empty, usage_empty = retrieval._handle_invoke_result(iter([]))
         assert text_empty == ""
         assert usage_empty == LLMUsage.empty_usage()
@@ -4024,6 +4029,7 @@ class TestDatasetRetrievalAdditionalHelpers:
             )
         assert mapping == {"d1": ["doc-1"]}
         assert condition is not None
+        # pyrefly: ignore [unsupported-operation]
         assert condition.conditions[0].value == "Alice"
 
         with patch("core.rag.retrieval.dataset_retrieval.db.session.scalars", return_value=scalars_result):
@@ -4558,6 +4564,7 @@ class TestSingleAndMultipleRetrieveCoverage:
                     user_id="user-1",
                     user_from="workflow",
                     query="python",
+                    # pyrefly: ignore [bad-argument-type]
                     available_datasets=[dataset],
                     model_instance=Mock(),
                     model_config=Mock(),
@@ -4610,11 +4617,13 @@ class TestSingleAndMultipleRetrieveCoverage:
                     user_id="user-1",
                     user_from="workflow",
                     query="python",
+                    # pyrefly: ignore [bad-argument-type]
                     available_datasets=[dataset],
                     model_instance=Mock(),
                     model_config=Mock(),
                     planning_strategy=PlanningStrategy.ROUTER,
                     metadata_filter_document_ids={"ds-1": ["doc-1"]},
+                    # pyrefly: ignore [bad-argument-type]
                     metadata_condition=SimpleNamespace(),
                 )
 
@@ -4631,6 +4640,7 @@ class TestSingleAndMultipleRetrieveCoverage:
                 user_id="user-1",
                 user_from="workflow",
                 query="python",
+                # pyrefly: ignore [bad-argument-type]
                 available_datasets=[
                     SimpleNamespace(id="ds-1", name="DS", description=None),
                 ],
@@ -4661,11 +4671,13 @@ class TestSingleAndMultipleRetrieveCoverage:
                 user_id="user-1",
                 user_from="workflow",
                 query="python",
+                # pyrefly: ignore [bad-argument-type]
                 available_datasets=[dataset],
                 model_instance=Mock(),
                 model_config=Mock(),
                 planning_strategy=PlanningStrategy.REACT_ROUTER,
                 metadata_filter_document_ids=None,
+                # pyrefly: ignore [bad-argument-type]
                 metadata_condition=SimpleNamespace(),
             )
             missing_doc_ids = retrieval.single_retrieve(
@@ -4674,6 +4686,7 @@ class TestSingleAndMultipleRetrieveCoverage:
                 user_id="user-1",
                 user_from="workflow",
                 query="python",
+                # pyrefly: ignore [bad-argument-type]
                 available_datasets=[dataset],
                 model_instance=Mock(),
                 model_config=Mock(),
@@ -4710,6 +4723,7 @@ class TestSingleAndMultipleRetrieveCoverage:
                 tenant_id="tenant-1",
                 user_id="user-1",
                 user_from="workflow",
+                # pyrefly: ignore [bad-argument-type]
                 available_datasets=mixed,
                 query="python",
                 top_k=2,
@@ -4738,6 +4752,7 @@ class TestSingleAndMultipleRetrieveCoverage:
                 tenant_id="tenant-1",
                 user_id="user-1",
                 user_from="workflow",
+                # pyrefly: ignore [bad-argument-type]
                 available_datasets=high_quality_mismatch,
                 query="python",
                 top_k=2,
@@ -4796,6 +4811,7 @@ class TestSingleAndMultipleRetrieveCoverage:
                     tenant_id="tenant-1",
                     user_id="user-1",
                     user_from="workflow",
+                    # pyrefly: ignore [bad-argument-type]
                     available_datasets=datasets,
                     query="python",
                     top_k=2,
@@ -4840,6 +4856,7 @@ class TestSingleAndMultipleRetrieveCoverage:
                         tenant_id="tenant-1",
                         user_id="user-1",
                         user_from="workflow",
+                        # pyrefly: ignore [bad-argument-type]
                         available_datasets=datasets,
                         query="python",
                         top_k=2,

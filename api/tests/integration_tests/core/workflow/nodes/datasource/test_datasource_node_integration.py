@@ -73,6 +73,7 @@ def test_node_integration_minimal_stream(mocker):
         id="n",
         config={
             "id": "n",
+            # pyrefly: ignore [bad-typed-dict-key]
             "data": {
                 "type": "datasource",
                 "version": "1",
@@ -83,7 +84,9 @@ def test_node_integration_minimal_stream(mocker):
                 "datasource_name": "ds",
             },
         },
+        # pyrefly: ignore [bad-argument-type]
         graph_init_params=_GP(),
+        # pyrefly: ignore [bad-argument-type]
         graph_runtime_state=_GS(vp),
     )
 

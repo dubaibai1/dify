@@ -75,6 +75,7 @@ class AppAnnotationService:
         annotation_setting = db.session.query(AppAnnotationSetting).where(AppAnnotationSetting.app_id == app_id).first()
         assert current_tenant_id is not None
         if annotation_setting:
+            # pyrefly: ignore [not-callable]
             add_annotation_to_index_task.delay(
                 annotation.id,
                 question,
@@ -97,6 +98,7 @@ class AppAnnotationService:
         # send batch add segments task
         redis_client.setnx(enable_app_annotation_job_key, "waiting")
         current_user, current_tenant_id = current_account_with_tenant()
+        # pyrefly: ignore [not-callable]
         enable_annotation_reply_task.delay(
             str(job_id),
             app_id,
@@ -121,6 +123,7 @@ class AppAnnotationService:
         disable_app_annotation_job_key = f"disable_app_annotation_job_{str(job_id)}"
         # send batch add segments task
         redis_client.setnx(disable_app_annotation_job_key, "waiting")
+        # pyrefly: ignore [not-callable]
         disable_annotation_reply_task.delay(str(job_id), app_id, current_tenant_id)
         return {"job_id": job_id, "job_status": "waiting"}
 
@@ -221,6 +224,7 @@ class AppAnnotationService:
         # if annotation reply is enabled , add annotation to index
         annotation_setting = db.session.query(AppAnnotationSetting).where(AppAnnotationSetting.app_id == app_id).first()
         if annotation_setting:
+            # pyrefly: ignore [not-callable]
             add_annotation_to_index_task.delay(
                 annotation.id,
                 question,
@@ -262,6 +266,7 @@ class AppAnnotationService:
         )
 
         if app_annotation_setting:
+            # pyrefly: ignore [not-callable]
             update_annotation_to_index_task.delay(
                 annotation.id,
                 annotation.question_text,
@@ -306,6 +311,7 @@ class AppAnnotationService:
         )
 
         if app_annotation_setting:
+            # pyrefly: ignore [not-callable]
             delete_annotation_index_task.delay(
                 annotation.id, app_id, current_tenant_id, app_annotation_setting.collection_binding_id
             )
@@ -345,6 +351,7 @@ class AppAnnotationService:
         # Step 3: Trigger async tasks for search index deletion
         for annotation, annotation_setting in annotations_to_delete:
             if annotation_setting:
+                # pyrefly: ignore [not-callable]
                 delete_annotation_index_task.delay(
                     annotation.id, app_id, current_tenant_id, annotation_setting.collection_binding_id
                 )
@@ -475,6 +482,7 @@ class AppAnnotationService:
 
             # Set job status
             redis_client.setnx(indexing_cache_key, "waiting")
+            # pyrefly: ignore [not-callable]
             batch_import_annotations_task.delay(str(job_id), result, app_id, current_tenant_id, current_user.id)
 
         except ValueError as e:
@@ -677,6 +685,7 @@ class AppAnnotationService:
 
             # if annotation reply is enabled, delete annotation index
             if app_annotation_setting:
+                # pyrefly: ignore [not-callable]
                 delete_annotation_index_task.delay(
                     annotation.id, app_id, current_tenant_id, app_annotation_setting.collection_binding_id
                 )
