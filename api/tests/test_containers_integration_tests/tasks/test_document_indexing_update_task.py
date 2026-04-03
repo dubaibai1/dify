@@ -1,6 +1,8 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
+
+# pyrefly: ignore [missing-import]
 from faker import Faker
 
 from core.rag.index_processor.constant.index_type import IndexStructureType, IndexTechniqueType
@@ -40,11 +42,13 @@ class TestDocumentIndexingUpdateTask:
             email=fake.email(),
             name=fake.name(),
             interface_language="en-US",
+            # pyrefly: ignore [bad-argument-type]
             status="active",
         )
         db_session_with_containers.add(account)
         db_session_with_containers.commit()
 
+        # pyrefly: ignore [bad-argument-type]
         tenant = Tenant(name=fake.company(), status="normal")
         db_session_with_containers.add(tenant)
         db_session_with_containers.commit()

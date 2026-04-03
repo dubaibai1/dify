@@ -76,11 +76,13 @@ def init_http_node(config: dict):
 
     node = HttpRequestNode(
         id=str(uuid.uuid4()),
+        # pyrefly: ignore [bad-argument-type]
         config=config,
         graph_init_params=init_params,
         graph_runtime_state=graph_runtime_state,
         http_request_config=HTTP_REQUEST_CONFIG,
         http_client=ssrf_proxy,
+        # pyrefly: ignore [bad-argument-type]
         tool_file_manager_factory=ToolFileManager,
         file_manager=file_manager,
         file_reference_factory=DifyFileReferenceFactory(init_params.run_context),
@@ -725,11 +727,13 @@ def test_nested_object_variable_selector(setup_http_mock):
 
     node = HttpRequestNode(
         id=str(uuid.uuid4()),
+        # pyrefly: ignore [bad-argument-type]
         config=graph_config["nodes"][1],
         graph_init_params=init_params,
         graph_runtime_state=graph_runtime_state,
         http_request_config=HTTP_REQUEST_CONFIG,
         http_client=ssrf_proxy,
+        # pyrefly: ignore [bad-argument-type]
         tool_file_manager_factory=ToolFileManager,
         file_manager=file_manager,
         file_reference_factory=DifyFileReferenceFactory(init_params.run_context),

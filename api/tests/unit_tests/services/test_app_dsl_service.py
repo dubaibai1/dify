@@ -211,6 +211,7 @@ def test_import_app_overwrite_only_allows_workflow_and_advanced_chat(monkeypatch
 
 def test_import_app_pending_stores_import_info_in_redis():
     service = AppDslService(MagicMock())
+    # pyrefly: ignore [missing-attribute]
     app_dsl_service.redis_client.setex.reset_mock()
     result = service.import_app(
         account=_account_mock(),
@@ -225,7 +226,9 @@ def test_import_app_pending_stores_import_info_in_redis():
     assert result.status == ImportStatus.PENDING
     assert result.imported_dsl_version == "99.0.0"
 
+    # pyrefly: ignore [missing-attribute]
     app_dsl_service.redis_client.setex.assert_called_once()
+    # pyrefly: ignore [missing-attribute]
     call = app_dsl_service.redis_client.setex.call_args
     redis_key = call.args[0]
     assert redis_key.startswith(app_dsl_service.IMPORT_INFO_REDIS_KEY_PREFIX)
@@ -376,10 +379,12 @@ def test_confirm_import_success_deletes_redis_key(monkeypatch):
     created_app = SimpleNamespace(id="confirmed-app", mode=AppMode.WORKFLOW.value, tenant_id="tenant-1")
     monkeypatch.setattr(AppDslService, "_create_or_update_app", lambda *_args, **_kwargs: created_app)
 
+    # pyrefly: ignore [missing-attribute]
     app_dsl_service.redis_client.delete.reset_mock()
     result = service.confirm_import(import_id="import-1", account=_account_mock())
     assert result.status == ImportStatus.COMPLETED
     assert result.app_id == "confirmed-app"
+    # pyrefly: ignore [missing-attribute]
     app_dsl_service.redis_client.delete.assert_called_once_with(
         f"{app_dsl_service.IMPORT_INFO_REDIS_KEY_PREFIX}import-1"
     )
@@ -399,6 +404,7 @@ def test_confirm_import_exception_returns_failed(monkeypatch):
 
 def test_check_dependencies_returns_empty_when_no_redis_data():
     service = AppDslService(MagicMock())
+    # pyrefly: ignore [bad-argument-type]
     result = service.check_dependencies(app_model=SimpleNamespace(id="app-1", tenant_id="tenant-1"))
     assert result.leaked_dependencies == []
 
@@ -416,6 +422,7 @@ def test_check_dependencies_calls_analysis_service(monkeypatch):
     )
 
     service = AppDslService(MagicMock())
+    # pyrefly: ignore [bad-argument-type]
     result = service.check_dependencies(app_model=SimpleNamespace(id="app-1", tenant_id="tenant-1"))
     assert len(result.leaked_dependencies) == 1
 
@@ -459,6 +466,7 @@ def test_create_or_update_app_existing_app_updates_fields(monkeypatch):
     )
     service = AppDslService(MagicMock())
     updated = service._create_or_update_app(
+        # pyrefly: ignore [bad-argument-type]
         app=app,
         data={
             "app": {"mode": AppMode.WORKFLOW.value, "name": "yaml-name", "icon_type": IconType.IMAGE, "icon": "X"},
@@ -542,6 +550,7 @@ def test_create_or_update_app_creates_workflow_app_and_saves_dependencies(monkey
 
     assert app.tenant_id == "tenant-1"
     assert sent == [(app.id, "account-1")]
+    # pyrefly: ignore [missing-attribute]
     app_dsl_service.redis_client.setex.assert_called()
     workflow_service.sync_draft_workflow.assert_called_once()
 
@@ -554,6 +563,7 @@ def test_create_or_update_app_workflow_missing_workflow_data_raises():
     service = AppDslService(MagicMock())
     with pytest.raises(ValueError, match="Missing workflow data"):
         service._create_or_update_app(
+            # pyrefly: ignore [bad-argument-type]
             app=SimpleNamespace(
                 id="a",
                 tenant_id="t",
@@ -572,6 +582,7 @@ def test_create_or_update_app_chat_requires_model_config():
     service = AppDslService(MagicMock())
     with pytest.raises(ValueError, match="Missing model_config"):
         service._create_or_update_app(
+            # pyrefly: ignore [bad-argument-type]
             app=SimpleNamespace(
                 id="a",
                 tenant_id="t",
@@ -611,6 +622,7 @@ def test_create_or_update_app_chat_creates_model_config_and_sends_event(monkeypa
         app_model_config=None,
     )
     service._create_or_update_app(
+        # pyrefly: ignore [bad-argument-type]
         app=app,
         data={"app": {"mode": AppMode.CHAT.value}, "model_config": {"model": {"provider": "openai"}}},
         account=_account_mock(),
@@ -625,6 +637,7 @@ def test_create_or_update_app_invalid_mode_raises():
     service = AppDslService(MagicMock())
     with pytest.raises(ValueError, match="Invalid app mode"):
         service._create_or_update_app(
+            # pyrefly: ignore [bad-argument-type]
             app=SimpleNamespace(
                 id="a",
                 tenant_id="t",
@@ -658,6 +671,7 @@ def test_export_dsl_delegates_by_mode(monkeypatch):
         use_icon_as_answer_icon=False,
         app_model_config=None,
     )
+    # pyrefly: ignore [bad-argument-type]
     AppDslService.export_dsl(workflow_app)
     assert workflow_calls == [True]
 
@@ -672,6 +686,7 @@ def test_export_dsl_delegates_by_mode(monkeypatch):
         use_icon_as_answer_icon=False,
         app_model_config=SimpleNamespace(to_dict=lambda: {"agent_mode": {"tools": []}}),
     )
+    # pyrefly: ignore [bad-argument-type]
     AppDslService.export_dsl(chat_app)
     assert model_calls == [True]
 
@@ -690,6 +705,7 @@ def test_export_dsl_preserves_icon_and_icon_type(monkeypatch):
         use_icon_as_answer_icon=True,
         app_model_config=None,
     )
+    # pyrefly: ignore [bad-argument-type]
     yaml_output = AppDslService.export_dsl(emoji_app)
     data = yaml.safe_load(yaml_output)
     assert data["app"]["icon"] == "🎨"
@@ -707,6 +723,7 @@ def test_export_dsl_preserves_icon_and_icon_type(monkeypatch):
         use_icon_as_answer_icon=False,
         app_model_config=None,
     )
+    # pyrefly: ignore [bad-argument-type]
     yaml_output = AppDslService.export_dsl(image_app)
     data = yaml.safe_load(yaml_output)
     assert data["app"]["icon"] == "https://example.com/icon.png"
@@ -759,6 +776,7 @@ def test_append_workflow_export_data_filters_and_overrides(monkeypatch):
     export_data: dict = {}
     AppDslService._append_workflow_export_data(
         export_data=export_data,
+        # pyrefly: ignore [bad-argument-type]
         app_model=SimpleNamespace(tenant_id="tenant-1"),
         include_secret=False,
         workflow_id=None,
@@ -783,6 +801,7 @@ def test_append_workflow_export_data_missing_workflow_raises(monkeypatch):
     with pytest.raises(ValueError, match="Missing draft workflow configuration"):
         AppDslService._append_workflow_export_data(
             export_data={},
+            # pyrefly: ignore [bad-argument-type]
             app_model=SimpleNamespace(tenant_id="tenant-1"),
             include_secret=False,
             workflow_id=None,
@@ -804,6 +823,7 @@ def test_append_model_config_export_data_filters_credential_id(monkeypatch):
     app_model = SimpleNamespace(tenant_id="tenant-1", app_model_config=app_model_config)
     export_data: dict = {}
 
+    # pyrefly: ignore [bad-argument-type]
     AppDslService._append_model_config_export_data(export_data, app_model)
     assert export_data["model_config"]["agent_mode"]["tools"] == [{}]
     assert export_data["dependencies"] == [{"tenant": "tenant-1", "dep": "dep-1"}]
@@ -811,6 +831,7 @@ def test_append_model_config_export_data_filters_credential_id(monkeypatch):
 
 def test_append_model_config_export_data_requires_app_config():
     with pytest.raises(ValueError, match="Missing app configuration"):
+        # pyrefly: ignore [bad-argument-type]
         AppDslService._append_model_config_export_data({}, SimpleNamespace(app_model_config=None))
 
 
@@ -923,6 +944,7 @@ def test_get_leaked_dependencies_delegates(monkeypatch):
         "get_leaked_dependencies",
         lambda *, tenant_id, dependencies: [SimpleNamespace(tenant_id=tenant_id, deps=dependencies)],
     )
+    # pyrefly: ignore [bad-argument-type]
     res = AppDslService.get_leaked_dependencies("tenant-1", [SimpleNamespace(id="x")])
     assert len(res) == 1
 

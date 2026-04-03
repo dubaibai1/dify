@@ -137,12 +137,15 @@ class TestLangfuseConfig:
     def test_missing_required_fields(self):
         """Test that required fields are enforced"""
         with pytest.raises(ValidationError):
+            # pyrefly: ignore [missing-argument]
             LangfuseConfig()
 
         with pytest.raises(ValidationError):
+            # pyrefly: ignore [missing-argument]
             LangfuseConfig(public_key="public")
 
         with pytest.raises(ValidationError):
+            # pyrefly: ignore [missing-argument]
             LangfuseConfig(secret_key="secret")
 
     def test_host_validation_empty(self):
@@ -169,12 +172,15 @@ class TestLangSmithConfig:
     def test_missing_required_fields(self):
         """Test that required fields are enforced"""
         with pytest.raises(ValidationError):
+            # pyrefly: ignore [missing-argument]
             LangSmithConfig()
 
         with pytest.raises(ValidationError):
+            # pyrefly: ignore [missing-argument]
             LangSmithConfig(api_key="key")
 
         with pytest.raises(ValidationError):
+            # pyrefly: ignore [missing-argument]
             LangSmithConfig(project="project")
 
     def test_endpoint_validation_https_only(self):
@@ -256,12 +262,15 @@ class TestWeaveConfig:
     def test_missing_required_fields(self):
         """Test that required fields are enforced"""
         with pytest.raises(ValidationError):
+            # pyrefly: ignore [missing-argument]
             WeaveConfig()
 
         with pytest.raises(ValidationError):
+            # pyrefly: ignore [missing-argument]
             WeaveConfig(api_key="key")
 
         with pytest.raises(ValidationError):
+            # pyrefly: ignore [missing-argument]
             WeaveConfig(project="project")
 
     def test_endpoint_validation_https_only(self):
@@ -308,12 +317,15 @@ class TestAliyunConfig:
     def test_missing_required_fields(self):
         """Test that required fields are enforced"""
         with pytest.raises(ValidationError):
+            # pyrefly: ignore [missing-argument]
             AliyunConfig()
 
         with pytest.raises(ValidationError):
+            # pyrefly: ignore [missing-argument]
             AliyunConfig(license_key="test_license")
 
         with pytest.raises(ValidationError):
+            # pyrefly: ignore [missing-argument]
             AliyunConfig(endpoint="https://tracing-analysis-dc-hz.aliyuncs.com")
 
     def test_app_name_validation_empty(self):

@@ -26,6 +26,7 @@ def test_email_delivery_config_helpers_render_and_sanitize_text() -> None:
     rendered = EmailDeliveryConfig.render_body_template(
         body="Open {{#url#}} and use {{#node.value#}}",
         url="https://example.com",
+        # pyrefly: ignore [bad-argument-type]
         variable_pool=variable_pool,
     )
     sanitized = EmailDeliveryConfig.sanitize_subject("Hello\r\n<script>alert(1)</script> Team")
@@ -63,8 +64,11 @@ def test_parse_human_input_delivery_methods_normalizes_legacy_recipient_keys() -
     )
 
     assert len(methods) == 1
+    # pyrefly: ignore [missing-attribute]
     assert methods[0].config.recipients.include_bound_group is True
+    # pyrefly: ignore [missing-attribute]
     assert methods[0].config.recipients.items[0].reference_id == "user-1"
+    # pyrefly: ignore [missing-attribute]
     assert methods[0].config.recipients.items[1].email == "external@example.com"
 
 

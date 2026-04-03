@@ -31,7 +31,11 @@ from graphon.variables.segments import (
     StringSegment,
 )
 from graphon.variables.types import SegmentType
+
+# pyrefly: ignore [missing-import]
 from hypothesis import HealthCheck, given, settings
+
+# pyrefly: ignore [missing-import]
 from hypothesis import strategies as st
 
 from factories import variable_factory

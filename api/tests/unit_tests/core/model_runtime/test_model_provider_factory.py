@@ -72,6 +72,7 @@ def test_model_provider_factory_resolves_runtime_provider_name() -> None:
         supported_model_types=[ModelType.LLM],
         configurate_methods=[ConfigurateMethod.PREDEFINED_MODEL],
     )
+    # pyrefly: ignore [bad-argument-type]
     factory = ModelProviderFactory(model_runtime=_FakeModelRuntime([provider]))
 
     provider_schema = factory.get_model_provider("openai")
@@ -97,6 +98,7 @@ def test_model_provider_factory_resolves_canonical_short_name_independent_of_pro
             configurate_methods=[ConfigurateMethod.PREDEFINED_MODEL],
         ),
     ]
+    # pyrefly: ignore [bad-argument-type]
     factory = ModelProviderFactory(model_runtime=_FakeModelRuntime(providers))
 
     provider_schema = factory.get_model_provider("openai")
@@ -118,6 +120,7 @@ def test_model_provider_factory_get_providers_returns_runtime_providers() -> Non
             supported_model_types=[ModelType.LLM],
         )
     ]
+    # pyrefly: ignore [bad-argument-type]
     factory = ModelProviderFactory(model_runtime=_FakeModelRuntime(providers))
 
     result = factory.get_providers()
@@ -132,6 +135,7 @@ def test_model_provider_factory_get_provider_schema_delegates_to_provider_lookup
         provider_name="openai",
         supported_model_types=[ModelType.LLM],
     )
+    # pyrefly: ignore [bad-argument-type]
     factory = ModelProviderFactory(model_runtime=_FakeModelRuntime([provider]))
 
     result = factory.get_provider_schema("openai")
@@ -141,6 +145,7 @@ def test_model_provider_factory_get_provider_schema_delegates_to_provider_lookup
 
 def test_model_provider_factory_raises_for_unknown_provider() -> None:
     factory = ModelProviderFactory(
+        # pyrefly: ignore [bad-argument-type]
         model_runtime=_FakeModelRuntime(
             [
                 _build_provider(
@@ -171,6 +176,7 @@ def test_model_provider_factory_get_models_filters_provider_and_model_type() -> 
             models=[_build_model("rerank-v3", ModelType.RERANK)],
         ),
     ]
+    # pyrefly: ignore [bad-argument-type]
     factory = ModelProviderFactory(model_runtime=_FakeModelRuntime(providers))
 
     results = factory.get_models(provider="openai", model_type=ModelType.LLM)
@@ -195,6 +201,7 @@ def test_model_provider_factory_get_models_skips_providers_without_requested_mod
             models=[_build_model("eleven_multilingual_v2", ModelType.TTS)],
         ),
     ]
+    # pyrefly: ignore [bad-argument-type]
     factory = ModelProviderFactory(model_runtime=_FakeModelRuntime(providers))
 
     results = factory.get_models(model_type=ModelType.TTS)
@@ -213,6 +220,7 @@ def test_model_provider_factory_get_models_without_model_type_keeps_all_provider
             models=[_build_model("gpt-4o-mini", ModelType.LLM), _build_model("tts-1", ModelType.TTS)],
         )
     ]
+    # pyrefly: ignore [bad-argument-type]
     factory = ModelProviderFactory(model_runtime=_FakeModelRuntime(providers))
 
     results = factory.get_models(provider="openai")
@@ -241,6 +249,7 @@ def test_model_provider_factory_validates_provider_credentials() -> None:
             )
         ]
     )
+    # pyrefly: ignore [bad-argument-type]
     factory = ModelProviderFactory(model_runtime=runtime)
 
     filtered = factory.provider_credentials_validate(
@@ -257,6 +266,7 @@ def test_model_provider_factory_validates_provider_credentials() -> None:
 
 def test_model_provider_factory_provider_credentials_validate_requires_schema() -> None:
     factory = ModelProviderFactory(
+        # pyrefly: ignore [bad-argument-type]
         model_runtime=_FakeModelRuntime(
             [
                 _build_provider(
@@ -293,6 +303,7 @@ def test_model_provider_factory_validates_model_credentials() -> None:
             )
         ]
     )
+    # pyrefly: ignore [bad-argument-type]
     factory = ModelProviderFactory(model_runtime=runtime)
 
     filtered = factory.model_credentials_validate(
@@ -313,6 +324,7 @@ def test_model_provider_factory_validates_model_credentials() -> None:
 
 def test_model_provider_factory_model_credentials_validate_requires_schema() -> None:
     factory = ModelProviderFactory(
+        # pyrefly: ignore [bad-argument-type]
         model_runtime=_FakeModelRuntime(
             [
                 _build_provider(
@@ -345,6 +357,7 @@ def test_model_provider_factory_get_model_schema_and_icon_use_canonical_provider
     )
     runtime.get_model_schema.return_value = "schema"
     runtime.get_provider_icon.return_value = (b"icon", "image/png")
+    # pyrefly: ignore [bad-argument-type]
     factory = ModelProviderFactory(model_runtime=runtime)
 
     assert (
@@ -386,6 +399,7 @@ def test_model_provider_factory_builds_model_type_instances(
     expected_type: type[object],
 ) -> None:
     factory = ModelProviderFactory(
+        # pyrefly: ignore [bad-argument-type]
         model_runtime=_FakeModelRuntime(
             [
                 _build_provider(
@@ -404,6 +418,7 @@ def test_model_provider_factory_builds_model_type_instances(
 
 def test_model_provider_factory_rejects_unsupported_model_type() -> None:
     factory = ModelProviderFactory(
+        # pyrefly: ignore [bad-argument-type]
         model_runtime=_FakeModelRuntime(
             [
                 _build_provider(

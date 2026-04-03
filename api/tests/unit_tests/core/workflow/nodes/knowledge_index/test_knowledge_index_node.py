@@ -117,6 +117,7 @@ class TestKnowledgeIndexNode:
         # Act
         node = KnowledgeIndexNode(
             id=node_id,
+            # pyrefly: ignore [bad-argument-type]
             config=config,
             graph_init_params=mock_graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -638,6 +639,7 @@ class TestInvokeKnowledgeIndex:
             is_preview=False,
             batch=batch,
             chunks=chunks,
+            # pyrefly: ignore [bad-argument-type]
             summary_index_setting=summary_setting,
         )
 

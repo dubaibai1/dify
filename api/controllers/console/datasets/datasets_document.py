@@ -1376,6 +1376,7 @@ class DocumentGenerateSummaryApi(Resource):
                 continue
 
             # Dispatch async task
+            # pyrefly: ignore [not-callable]
             generate_summary_index_task.delay(dataset_id, document.id)
             logger.info(
                 "Dispatched summary generation task for document %s in dataset %s",

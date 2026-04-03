@@ -92,6 +92,7 @@ from core.rag.index_processor.constant.built_in_field import BuiltInField
 from models.dataset import Dataset, DatasetMetadata, DatasetMetadataBinding
 from services.entities.knowledge_entities.knowledge_entities import (
     MetadataArgs,
+    # pyrefly: ignore [missing-module-attribute]
     MetadataValue,
 )
 from services.metadata_service import MetadataService

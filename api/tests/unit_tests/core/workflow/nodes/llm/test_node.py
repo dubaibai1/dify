@@ -212,6 +212,7 @@ def llm_node(
     http_client = mock.MagicMock()
     node = LLMNode(
         id="1",
+        # pyrefly: ignore [bad-argument-type]
         config=node_config,
         graph_init_params=graph_init_params,
         graph_runtime_state=graph_runtime_state,
@@ -1221,6 +1222,7 @@ class TestLLMNodeSaveMultiModalImageOutput:
         llm_node._file_outputs.append(file)
         assert llm_node._file_outputs == [mock_file]
         assert file == mock_file
+        # pyrefly: ignore [missing-attribute]
         mock_file_saver.save_binary_string.assert_called_once_with(
             data=b"test-data", mime_type="image/png", file_type=FileType.IMAGE
         )
@@ -1251,6 +1253,7 @@ class TestLLMNodeSaveMultiModalImageOutput:
         llm_node._file_outputs.append(file)
         assert llm_node._file_outputs == [mock_file]
         assert file == mock_file
+        # pyrefly: ignore [missing-attribute]
         mock_file_saver.save_remote_url.assert_called_once_with(content.url, FileType.IMAGE)
 
 
@@ -1510,6 +1513,7 @@ def test_handle_invoke_result_streaming_collects_text_metrics_and_structured_out
     with mock.patch("graphon.nodes.llm.node.time.perf_counter", side_effect=[2.0, 5.0]):
         events = list(
             LLMNode.handle_invoke_result(
+                # pyrefly: ignore [bad-argument-type]
                 invoke_result=iter([first_chunk, final_chunk]),
                 file_saver=mock.MagicMock(spec=LLMFileSaver),
                 file_outputs=[],
@@ -1548,6 +1552,7 @@ def test_handle_invoke_result_wraps_structured_output_parse_errors():
     with pytest.raises(LLMNodeError, match="Failed to parse structured output: bad json"):
         list(
             LLMNode.handle_invoke_result(
+                # pyrefly: ignore [bad-argument-type]
                 invoke_result=broken_stream(),
                 file_saver=mock.MagicMock(spec=LLMFileSaver),
                 file_outputs=[],
@@ -1741,7 +1746,9 @@ def test_build_dify_model_access_binds_run_context_user_id_once():
 
 def test_dify_model_access_requires_run_context_argument():
     with pytest.raises(TypeError):
+        # pyrefly: ignore [missing-argument]
         DifyCredentialsProvider()
 
     with pytest.raises(TypeError):
+        # pyrefly: ignore [missing-argument]
         DifyModelFactory()

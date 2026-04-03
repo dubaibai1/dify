@@ -20,10 +20,12 @@ class HuaweiCloudVectorTest(AbstractVectorTest):
         )
 
     def search_by_vector(self):
+        # pyrefly: ignore [missing-attribute]
         hits_by_vector = self.vector.search_by_vector(query_vector=self.example_embedding)
         assert len(hits_by_vector) == 3
 
     def search_by_full_text(self):
+        # pyrefly: ignore [missing-attribute]
         hits_by_full_text = self.vector.search_by_full_text(query=get_example_text())
         assert len(hits_by_full_text) == 3
 

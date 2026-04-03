@@ -109,6 +109,7 @@ class AnalyticdbVectorOpenAPI:
                     manager_account=self.config.account,
                     manager_account_password=self.config.account_password,
                     namespace=self.config.namespace,
+                    # pyrefly: ignore [bad-argument-type]
                     namespace_password=self.config.namespace_password,
                 )
                 self._client.create_namespace(request)
@@ -130,6 +131,7 @@ class AnalyticdbVectorOpenAPI:
                     dbinstance_id=self.config.instance_id,
                     region_id=self.config.region_id,
                     namespace=self.config.namespace,
+                    # pyrefly: ignore [bad-argument-type]
                     namespace_password=self.config.namespace_password,
                     collection=self._collection_name,
                 )
@@ -176,6 +178,7 @@ class AnalyticdbVectorOpenAPI:
             dbinstance_id=self.config.instance_id,
             region_id=self.config.region_id,
             namespace=self.config.namespace,
+            # pyrefly: ignore [bad-argument-type]
             namespace_password=self.config.namespace_password,
             collection=self._collection_name,
             rows=rows,
@@ -189,11 +192,14 @@ class AnalyticdbVectorOpenAPI:
             dbinstance_id=self.config.instance_id,
             region_id=self.config.region_id,
             namespace=self.config.namespace,
+            # pyrefly: ignore [bad-argument-type]
             namespace_password=self.config.namespace_password,
             collection=self._collection_name,
             metrics=self.config.metrics,
             include_values=True,
+            # pyrefly: ignore [bad-argument-type]
             vector=None,
+            # pyrefly: ignore [bad-argument-type]
             content=None,
             top_k=1,
             filter=f"ref_doc_id='{id}'",
@@ -210,8 +216,10 @@ class AnalyticdbVectorOpenAPI:
             dbinstance_id=self.config.instance_id,
             region_id=self.config.region_id,
             namespace=self.config.namespace,
+            # pyrefly: ignore [bad-argument-type]
             namespace_password=self.config.namespace_password,
             collection=self._collection_name,
+            # pyrefly: ignore [bad-argument-type]
             collection_data=None,
             collection_data_filter=f"ref_doc_id IN {ids_str}",
         )
@@ -224,8 +232,10 @@ class AnalyticdbVectorOpenAPI:
             dbinstance_id=self.config.instance_id,
             region_id=self.config.region_id,
             namespace=self.config.namespace,
+            # pyrefly: ignore [bad-argument-type]
             namespace_password=self.config.namespace_password,
             collection=self._collection_name,
+            # pyrefly: ignore [bad-argument-type]
             collection_data=None,
             collection_data_filter=f"metadata_ ->> '{key}' = '{value}'",
         )
@@ -245,11 +255,13 @@ class AnalyticdbVectorOpenAPI:
             dbinstance_id=self.config.instance_id,
             region_id=self.config.region_id,
             namespace=self.config.namespace,
+            # pyrefly: ignore [bad-argument-type]
             namespace_password=self.config.namespace_password,
             collection=self._collection_name,
             include_values=kwargs.pop("include_values", True),
             metrics=self.config.metrics,
             vector=query_vector,
+            # pyrefly: ignore [bad-argument-type]
             content=None,
             top_k=kwargs.get("top_k", 4),
             filter=where_clause,
@@ -261,6 +273,7 @@ class AnalyticdbVectorOpenAPI:
                 metadata = parse_metadata_json(match.metadata.get("metadata_"))
                 metadata["score"] = match.score
                 doc = Document(
+                    # pyrefly: ignore [bad-argument-type]
                     page_content=match.metadata.get("page_content"),
                     vector=match.values.value,
                     metadata=metadata,
@@ -282,10 +295,12 @@ class AnalyticdbVectorOpenAPI:
             dbinstance_id=self.config.instance_id,
             region_id=self.config.region_id,
             namespace=self.config.namespace,
+            # pyrefly: ignore [bad-argument-type]
             namespace_password=self.config.namespace_password,
             collection=self._collection_name,
             include_values=kwargs.pop("include_values", True),
             metrics=self.config.metrics,
+            # pyrefly: ignore [bad-argument-type]
             vector=None,
             content=query,
             top_k=kwargs.get("top_k", 4),
@@ -298,6 +313,7 @@ class AnalyticdbVectorOpenAPI:
                 metadata = parse_metadata_json(match.metadata.get("metadata_"))
                 metadata["score"] = match.score
                 doc = Document(
+                    # pyrefly: ignore [bad-argument-type]
                     page_content=match.metadata.get("page_content"),
                     vector=match.values.value,
                     metadata=metadata,
@@ -314,6 +330,7 @@ class AnalyticdbVectorOpenAPI:
                 collection=self._collection_name,
                 dbinstance_id=self.config.instance_id,
                 namespace=self.config.namespace,
+                # pyrefly: ignore [bad-argument-type]
                 namespace_password=self.config.namespace_password,
                 region_id=self.config.region_id,
             )

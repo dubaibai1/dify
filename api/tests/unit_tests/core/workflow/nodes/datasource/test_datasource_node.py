@@ -81,6 +81,7 @@ def test_datasource_node_delegates_to_manager_stream(mocker):
         id="n",
         config={
             "id": "n",
+            # pyrefly: ignore [bad-typed-dict-key]
             "data": {
                 "type": "datasource",
                 "version": "1",
@@ -91,7 +92,9 @@ def test_datasource_node_delegates_to_manager_stream(mocker):
                 "datasource_name": "ds",
             },
         },
+        # pyrefly: ignore [bad-argument-type]
         graph_init_params=gp,
+        # pyrefly: ignore [bad-argument-type]
         graph_runtime_state=gs,
     )
 

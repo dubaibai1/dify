@@ -126,6 +126,7 @@ def fake_redis() -> FakeStreamsRedis:
 
 @pytest.fixture
 def streams_channel(fake_redis: FakeStreamsRedis) -> StreamsBroadcastChannel:
+    # pyrefly: ignore [bad-argument-type]
     return StreamsBroadcastChannel(fake_redis, retention_seconds=60)
 
 
@@ -157,6 +158,7 @@ class TestStreamsBroadcastChannel:
         assert topic.as_subscriber() is topic
 
     def test_publish_logs_warning_when_expire_fails(self, caplog: pytest.LogCaptureFixture):
+        # pyrefly: ignore [bad-argument-type]
         channel = StreamsBroadcastChannel(FailExpireRedis(), retention_seconds=60)
         topic = channel.topic("expire-warning")
 
@@ -208,6 +210,7 @@ class TestStreamsSubscription:
                 sub.receive()
 
     def test_no_expire_when_zero_retention(self, fake_redis: FakeStreamsRedis):
+        # pyrefly: ignore [bad-argument-type]
         channel = StreamsBroadcastChannel(fake_redis, retention_seconds=0)
         topic = channel.topic("zeta")
         topic.publish(b"payload")
@@ -233,6 +236,7 @@ class TestStreamsSubscription:
                 subscription._closed = True
                 return []
 
+        # pyrefly: ignore [bad-argument-type]
         subscription = _StreamsSubscription(OneShotRedis(case.fields), "stream:payload-shape")
         subscription._listen()
 
@@ -241,6 +245,7 @@ class TestStreamsSubscription:
             item = subscription._queue.get_nowait()
             if item is subscription._SENTINEL:
                 break
+            # pyrefly: ignore [bad-argument-type]
             received.append(bytes(item))
 
         assert received == case.expected_messages
@@ -282,6 +287,7 @@ class TestStreamsSubscription:
             publisher.join(timeout=1)
 
     def test_receive_raises_when_queue_contains_close_sentinel(self):
+        # pyrefly: ignore [bad-argument-type]
         subscription = _StreamsSubscription(FakeStreamsRedis(), "stream:sentinel")
         subscription._listener = threading.current_thread()
         subscription._queue.put_nowait(subscription._SENTINEL)
@@ -290,6 +296,7 @@ class TestStreamsSubscription:
             subscription.receive(timeout=0.01)
 
     def test_close_before_listener_starts_is_a_noop(self):
+        # pyrefly: ignore [bad-argument-type]
         subscription = _StreamsSubscription(FakeStreamsRedis(), "stream:not-started")
 
         subscription.close()
@@ -299,6 +306,7 @@ class TestStreamsSubscription:
             subscription.receive(timeout=0.01)
 
     def test_start_if_needed_returns_immediately_for_closed_subscription(self):
+        # pyrefly: ignore [bad-argument-type]
         subscription = _StreamsSubscription(FakeStreamsRedis(), "stream:already-closed")
         subscription._closed = True
 
@@ -307,6 +315,7 @@ class TestStreamsSubscription:
         assert subscription._listener is None
 
     def test_iterator_skips_none_results_and_keeps_polling(self):
+        # pyrefly: ignore [bad-argument-type]
         subscription = _StreamsSubscription(FakeStreamsRedis(), "stream:iterator-none")
         items = iter([None, b"event"])
 
@@ -327,6 +336,7 @@ class TestStreamsSubscription:
         caplog: pytest.LogCaptureFixture,
     ):
         blocking_redis = BlockingRedis()
+        # pyrefly: ignore [bad-argument-type]
         subscription = _StreamsSubscription(blocking_redis, "stream:slow-close")
 
         subscription._start_if_needed()

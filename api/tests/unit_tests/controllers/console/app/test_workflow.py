@@ -22,6 +22,7 @@ def test_parse_file_no_config(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(workflow_module.FileUploadConfigManager, "convert", lambda *_args, **_kwargs: None)
     workflow = SimpleNamespace(features_dict={}, tenant_id="t1")
 
+    # pyrefly: ignore [bad-argument-type]
     assert workflow_module._parse_file(workflow, files=[{"id": "f"}]) == []
 
 
@@ -40,6 +41,7 @@ def test_parse_file_with_config(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(workflow_module.file_factory, "build_from_mappings", build_mock)
 
     workflow = SimpleNamespace(features_dict={}, tenant_id="t1")
+    # pyrefly: ignore [bad-argument-type]
     result = workflow_module._parse_file(workflow, files=[{"id": "f"}])
 
     assert result == file_list

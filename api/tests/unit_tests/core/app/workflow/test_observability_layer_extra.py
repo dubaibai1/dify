@@ -45,6 +45,7 @@ class TestObservabilityLayerExtras:
     def test_get_parser_uses_registry_when_node_type_matches(self):
         layer = ObservabilityLayer()
 
+        # pyrefly: ignore [bad-argument-type]
         parser = layer._get_parser(SimpleNamespace(node_type=BuiltinNodeTypes.TOOL))
 
         assert parser is layer._parsers[BuiltinNodeTypes.TOOL]
@@ -52,12 +53,14 @@ class TestObservabilityLayerExtras:
     def test_get_parser_defaults_when_node_type_missing(self):
         layer = ObservabilityLayer()
 
+        # pyrefly: ignore [bad-argument-type]
         parser = layer._get_parser(SimpleNamespace(node_type=None))
 
         assert parser is layer._default_parser
 
     def test_on_graph_start_clears_contexts(self):
         layer = ObservabilityLayer()
+        # pyrefly: ignore [unsupported-operation]
         layer._node_contexts["exec"] = SimpleNamespace(span=object(), token="token")
 
         layer.on_graph_start()
@@ -67,10 +70,12 @@ class TestObservabilityLayerExtras:
     def test_on_event_is_noop(self):
         layer = ObservabilityLayer()
 
+        # pyrefly: ignore [bad-argument-type]
         layer.on_event(object())
 
     def test_on_graph_end_clears_unfinished_contexts(self, caplog):
         layer = ObservabilityLayer()
+        # pyrefly: ignore [unsupported-operation]
         layer._node_contexts["exec"] = SimpleNamespace(span=object(), token="token")
 
         layer.on_graph_end(error=None)
@@ -83,6 +88,7 @@ class TestObservabilityLayerExtras:
         layer._is_disabled = False
         layer._tracer = None
 
+        # pyrefly: ignore [bad-argument-type]
         layer.on_node_run_start(SimpleNamespace(execution_id=None, title="node", id="node"))
 
         assert layer._node_contexts == {}
@@ -90,8 +96,10 @@ class TestObservabilityLayerExtras:
     def test_on_node_run_start_skips_when_disabled(self):
         layer = ObservabilityLayer()
         layer._is_disabled = True
+        # pyrefly: ignore [bad-assignment]
         layer._tracer = SimpleNamespace(start_span=lambda *_args, **_kwargs: object())
 
+        # pyrefly: ignore [bad-argument-type]
         layer.on_node_run_start(SimpleNamespace(execution_id="exec", title="node", id="node"))
 
         assert layer._node_contexts == {}
@@ -100,8 +108,10 @@ class TestObservabilityLayerExtras:
         layer = ObservabilityLayer()
         layer._is_disabled = False
         calls: list[str] = []
+        # pyrefly: ignore [bad-assignment]
         layer._tracer = SimpleNamespace(start_span=lambda *_args, **_kwargs: calls.append("called"))
 
+        # pyrefly: ignore [bad-argument-type]
         layer.on_node_run_start(SimpleNamespace(execution_id=None, title="node", id="node"))
 
         assert calls == []
@@ -113,8 +123,10 @@ class TestObservabilityLayerExtras:
         def _raise(*_args, **_kwargs):
             raise RuntimeError("start failed")
 
+        # pyrefly: ignore [bad-assignment]
         layer._tracer = SimpleNamespace(start_span=_raise)
 
+        # pyrefly: ignore [bad-argument-type]
         layer.on_node_run_start(SimpleNamespace(execution_id="exec", title="node", id="node"))
 
         assert "Failed to create OpenTelemetry span for node" in caplog.text
@@ -123,6 +135,7 @@ class TestObservabilityLayerExtras:
         layer = ObservabilityLayer()
         layer._is_disabled = False
 
+        # pyrefly: ignore [bad-argument-type]
         layer.on_node_run_end(SimpleNamespace(execution_id="missing", id="node"), error=None)
 
         assert layer._node_contexts == {}
@@ -130,8 +143,10 @@ class TestObservabilityLayerExtras:
     def test_on_node_run_end_skips_when_disabled(self):
         layer = ObservabilityLayer()
         layer._is_disabled = True
+        # pyrefly: ignore [unsupported-operation]
         layer._node_contexts["exec"] = SimpleNamespace(span=object(), token="token")
 
+        # pyrefly: ignore [bad-argument-type]
         layer.on_node_run_end(SimpleNamespace(execution_id="exec", id="node"), error=None)
 
         assert "exec" in layer._node_contexts
@@ -140,6 +155,7 @@ class TestObservabilityLayerExtras:
         layer = ObservabilityLayer()
         layer._is_disabled = False
 
+        # pyrefly: ignore [bad-argument-type]
         layer.on_node_run_end(SimpleNamespace(execution_id=None, id="node"), error=None)
 
         assert layer._node_contexts == {}
@@ -155,11 +171,13 @@ class TestObservabilityLayerExtras:
 
         span = SimpleNamespace(end=lambda: ended.append("ended"))
         layer._default_parser = _Parser()
+        # pyrefly: ignore [unsupported-operation]
         layer._node_contexts["exec"] = SimpleNamespace(span=span, token="token")
 
         monkeypatch.setattr("core.app.workflow.layers.observability.context_api.detach", lambda _token: None)
 
         node = SimpleNamespace(execution_id="exec", title="Node", id="node", node_type=None)
+        # pyrefly: ignore [bad-argument-type]
         layer.on_node_run_end(node, error=None)
 
         assert ended == ["ended"]
@@ -174,6 +192,7 @@ class TestObservabilityLayerExtras:
                 return None
 
         layer._default_parser = _Parser()
+        # pyrefly: ignore [unsupported-operation]
         layer._node_contexts["exec"] = SimpleNamespace(span=SimpleNamespace(end=lambda: None), token="bad-token")
 
         def _raise(*_args, **_kwargs):
@@ -182,6 +201,7 @@ class TestObservabilityLayerExtras:
         monkeypatch.setattr("core.app.workflow.layers.observability.context_api.detach", _raise)
 
         node = SimpleNamespace(execution_id="exec", title="Node", id="node", node_type=None)
+        # pyrefly: ignore [bad-argument-type]
         layer.on_node_run_end(node, error=None)
 
         assert "Failed to detach OpenTelemetry token" in caplog.text
@@ -199,12 +219,15 @@ class TestObservabilityLayerExtras:
         monkeypatch.setattr("core.app.workflow.layers.observability.context_api.attach", lambda ctx: "token")
         monkeypatch.setattr("core.app.workflow.layers.observability.context_api.detach", lambda token: None)
 
+        # pyrefly: ignore [bad-assignment]
         layer._tracer = tracer
 
         node = SimpleNamespace(execution_id="exec", title="Node", id="node", node_type=None)
 
+        # pyrefly: ignore [bad-argument-type]
         layer.on_node_run_start(node)
         assert "exec" in layer._node_contexts
 
+        # pyrefly: ignore [bad-argument-type]
         layer.on_node_run_end(node, error=None)
         assert "exec" not in layer._node_contexts

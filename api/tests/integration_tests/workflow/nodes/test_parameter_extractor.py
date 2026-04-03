@@ -71,6 +71,7 @@ def init_parameter_extractor_node(config: dict, memory=None):
 
     node = ParameterExtractorNode(
         id=str(uuid.uuid4()),
+        # pyrefly: ignore [bad-argument-type]
         config=config,
         graph_init_params=init_params,
         graph_runtime_state=graph_runtime_state,

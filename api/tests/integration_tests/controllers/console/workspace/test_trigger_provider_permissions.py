@@ -43,6 +43,7 @@ class TestTriggerProviderSubscriptionPermissions:
         monkeypatch.setattr("models.account.Session", lambda _, expire_on_commit: mock_session_context)
 
         account.current_tenant = tenant
+        # pyrefly: ignore [read-only]
         account.current_tenant_id = tenant.id
         return account
 

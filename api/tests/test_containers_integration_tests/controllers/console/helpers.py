@@ -37,6 +37,7 @@ def create_console_account_and_tenant(db_session: Session) -> tuple[Account, Ten
     db_session.add(account)
     db_session.commit()
 
+    # pyrefly: ignore [bad-argument-type]
     tenant = Tenant(name="Test Tenant", status="normal")
     db_session.add(tenant)
     db_session.commit()

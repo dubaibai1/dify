@@ -93,6 +93,7 @@ class TestEnumText:
         user_type_column = _first(c for c in columns if c["name"] == "user_type")
         sql_type = user_type_column["type"]
         assert isinstance(user_type_column["type"], VARCHAR)
+        # pyrefly: ignore [missing-attribute]
         assert sql_type.length == 20
         assert user_type_column["nullable"] is False
 
@@ -130,12 +131,16 @@ class TestEnumText:
 
         with Session(engine_with_containers) as session:
             user = session.query(_User).where(_User.id == admin_user_id).first()
+            # pyrefly: ignore [missing-attribute]
             assert user.user_type == _UserType.admin
+            # pyrefly: ignore [missing-attribute]
             assert user.user_type_nullable is None
 
         with Session(engine_with_containers) as session:
             user = session.query(_User).where(_User.id == normal_user_id).first()
+            # pyrefly: ignore [missing-attribute]
             assert user.user_type == _UserType.normal
+            # pyrefly: ignore [missing-attribute]
             assert user.user_type_nullable == _UserType.normal
 
     def test_insert_invalid_values(self, engine_with_containers: Engine):

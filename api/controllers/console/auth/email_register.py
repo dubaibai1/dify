@@ -75,6 +75,7 @@ class EmailRegisterSendEmailApi(Resource):
 
         with sessionmaker(db.engine).begin() as session:
             account = AccountService.get_account_by_email_with_case_fallback(args.email, session=session)
+        # pyrefly: ignore [bad-argument-type]
         token = AccountService.send_email_register_email(email=normalized_email, account=account, language=language)
         return {"result": "success", "data": token}
 

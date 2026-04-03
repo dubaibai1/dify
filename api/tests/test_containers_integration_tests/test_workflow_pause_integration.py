@@ -181,6 +181,7 @@ class TestWorkflowPauseIntegration:
 
         tenant = Tenant(
             name="Test Tenant",
+            # pyrefly: ignore [bad-argument-type]
             status="normal",
         )
         db_session_with_containers.add(tenant)
@@ -190,6 +191,7 @@ class TestWorkflowPauseIntegration:
             email="test@example.com",
             name="Test User",
             interface_language="en-US",
+            # pyrefly: ignore [bad-argument-type]
             status="active",
         )
         db_session_with_containers.add(account)
@@ -693,6 +695,7 @@ class TestWorkflowPauseIntegration:
 
         tenant2 = Tenant(
             name="Test Tenant 2",
+            # pyrefly: ignore [bad-argument-type]
             status="normal",
         )
         self.session.add(tenant2)
@@ -702,6 +705,7 @@ class TestWorkflowPauseIntegration:
             email="test2@example.com",
             name="Test User 2",
             interface_language="en-US",
+            # pyrefly: ignore [bad-argument-type]
             status="active",
         )
         self.session.add(account2)

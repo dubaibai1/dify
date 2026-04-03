@@ -80,6 +80,7 @@ def test_execute_answer():
         id=str(uuid.uuid4()),
         graph_init_params=init_params,
         graph_runtime_state=graph_runtime_state,
+        # pyrefly: ignore [bad-argument-type]
         config=node_config,
     )
 

@@ -18,6 +18,7 @@ class Config:
 class TestLindormVectorStore(AbstractVectorTest):
     def __init__(self):
         super().__init__()
+        # pyrefly: ignore [missing-argument]
         self.vector = LindormVectorStore(
             collection_name=self.collection_name,
             config=LindormVectorStoreConfig(
@@ -28,6 +29,7 @@ class TestLindormVectorStore(AbstractVectorTest):
         )
 
     def get_ids_by_metadata_field(self):
+        # pyrefly: ignore [missing-attribute]
         ids = self.vector.get_ids_by_metadata_field(key="doc_id", value=self.example_doc_id)
         assert ids is not None
         assert len(ids) == 1
@@ -37,6 +39,7 @@ class TestLindormVectorStore(AbstractVectorTest):
 class TestLindormVectorStoreUGC(AbstractVectorTest):
     def __init__(self):
         super().__init__()
+        # pyrefly: ignore [missing-argument]
         self.vector = LindormVectorStore(
             collection_name="ugc_index_test",
             config=LindormVectorStoreConfig(
@@ -49,6 +52,7 @@ class TestLindormVectorStoreUGC(AbstractVectorTest):
         )
 
     def get_ids_by_metadata_field(self):
+        # pyrefly: ignore [missing-attribute]
         ids = self.vector.get_ids_by_metadata_field(key="doc_id", value=self.example_doc_id)
         assert ids is not None
         assert len(ids) == 1

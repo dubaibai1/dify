@@ -56,6 +56,7 @@ def list_operator_node():
 
     node = ListOperatorNode(
         id="test_node_id",
+        # pyrefly: ignore [bad-argument-type]
         config=node_config,
         graph_init_params=graph_init_params,
         graph_runtime_state=MagicMock(),

@@ -4,6 +4,8 @@ from unittest.mock import MagicMock, Mock, PropertyMock, patch
 import pytest
 from graphon.model_runtime.entities.common_entities import I18nObject
 from graphon.model_runtime.entities.model_entities import ModelType
+
+# pyrefly: ignore [missing-import]
 from pytest_mock import MockerFixture
 
 from core.entities.provider_entities import ModelSettings
@@ -48,6 +50,7 @@ def test__to_model_settings(mocker: MockerFixture, mock_provider_entity):
         tenant_id="tenant_id",
         provider_name="openai",
         model_name="gpt-4",
+        # pyrefly: ignore [bad-argument-type]
         model_type="llm",
         enabled=True,
         load_balancing_enabled=True,
@@ -61,6 +64,7 @@ def test__to_model_settings(mocker: MockerFixture, mock_provider_entity):
             tenant_id="tenant_id",
             provider_name="openai",
             model_name="gpt-4",
+            # pyrefly: ignore [bad-argument-type]
             model_type="llm",
             name="__inherit__",
             encrypted_config=None,
@@ -70,6 +74,7 @@ def test__to_model_settings(mocker: MockerFixture, mock_provider_entity):
             tenant_id="tenant_id",
             provider_name="openai",
             model_name="gpt-4",
+            # pyrefly: ignore [bad-argument-type]
             model_type="llm",
             name="first",
             encrypted_config='{"openai_api_key": "fake_key"}',
@@ -110,6 +115,7 @@ def test__to_model_settings_only_one_lb(mocker: MockerFixture, mock_provider_ent
         tenant_id="tenant_id",
         provider_name="openai",
         model_name="gpt-4",
+        # pyrefly: ignore [bad-argument-type]
         model_type="llm",
         enabled=True,
         load_balancing_enabled=True,
@@ -121,6 +127,7 @@ def test__to_model_settings_only_one_lb(mocker: MockerFixture, mock_provider_ent
             tenant_id="tenant_id",
             provider_name="openai",
             model_name="gpt-4",
+            # pyrefly: ignore [bad-argument-type]
             model_type="llm",
             name="__inherit__",
             encrypted_config=None,
@@ -157,6 +164,7 @@ def test__to_model_settings_lb_disabled(mocker: MockerFixture, mock_provider_ent
         tenant_id="tenant_id",
         provider_name="openai",
         model_name="gpt-4",
+        # pyrefly: ignore [bad-argument-type]
         model_type="llm",
         enabled=True,
         load_balancing_enabled=False,
@@ -168,6 +176,7 @@ def test__to_model_settings_lb_disabled(mocker: MockerFixture, mock_provider_ent
             tenant_id="tenant_id",
             provider_name="openai",
             model_name="gpt-4",
+            # pyrefly: ignore [bad-argument-type]
             model_type="llm",
             name="__inherit__",
             encrypted_config=None,
@@ -177,6 +186,7 @@ def test__to_model_settings_lb_disabled(mocker: MockerFixture, mock_provider_ent
             tenant_id="tenant_id",
             provider_name="openai",
             model_name="gpt-4",
+            # pyrefly: ignore [bad-argument-type]
             model_type="llm",
             name="first",
             encrypted_config='{"openai_api_key": "fake_key"}',

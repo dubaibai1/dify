@@ -102,6 +102,7 @@ def _build_graph(
     start_data = StartNodeData(title="start", variables=[])
     start_node = StartNode(
         id="start",
+        # pyrefly: ignore [bad-typed-dict-key]
         config={"id": "start", "data": start_data.model_dump()},
         graph_init_params=params,
         graph_runtime_state=runtime_state,
@@ -117,6 +118,7 @@ def _build_graph(
     )
     human_node = HumanInputNode(
         id="human",
+        # pyrefly: ignore [bad-typed-dict-key]
         config={"id": "human", "data": human_data.model_dump()},
         graph_init_params=params,
         graph_runtime_state=runtime_state,
@@ -131,6 +133,7 @@ def _build_graph(
     )
     end_node = EndNode(
         id="end",
+        # pyrefly: ignore [bad-typed-dict-key]
         config={"id": "end", "data": end_data.model_dump()},
         graph_init_params=params,
         graph_runtime_state=runtime_state,
@@ -175,6 +178,7 @@ class TestHumanInputResumeNodeExecutionIntegration:
     def setup_test_data(self, db_session_with_containers: Session):
         tenant = Tenant(
             name="Test Tenant",
+            # pyrefly: ignore [bad-argument-type]
             status="normal",
         )
         db_session_with_containers.add(tenant)
@@ -184,6 +188,7 @@ class TestHumanInputResumeNodeExecutionIntegration:
             email="test@example.com",
             name="Test User",
             interface_language="en-US",
+            # pyrefly: ignore [bad-argument-type]
             status="active",
         )
         db_session_with_containers.add(account)
@@ -261,12 +266,14 @@ class TestHumanInputResumeNodeExecutionIntegration:
             user_id=self.account.id,
         )
         execution_repo = SQLAlchemyWorkflowExecutionRepository(
+            # pyrefly: ignore [bad-argument-type]
             session_factory=self.session.get_bind(),
             user=self.account,
             app_id=self.app.id,
             triggered_from=WorkflowRunTriggeredFrom.DEBUGGING,
         )
         node_execution_repo = SQLAlchemyWorkflowNodeExecutionRepository(
+            # pyrefly: ignore [bad-argument-type]
             session_factory=self.session.get_bind(),
             user=self.account,
             app_id=self.app.id,

@@ -62,6 +62,7 @@ def init_tool_node(config: dict):
 
     node = ToolNode(
         id=str(uuid.uuid4()),
+        # pyrefly: ignore [bad-argument-type]
         config=config,
         graph_init_params=init_params,
         graph_runtime_state=graph_runtime_state,

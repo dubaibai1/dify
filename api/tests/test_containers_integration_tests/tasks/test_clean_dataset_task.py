@@ -15,6 +15,8 @@ from datetime import datetime
 from unittest.mock import MagicMock, patch
 
 import pytest
+
+# pyrefly: ignore [missing-import]
 from faker import Faker
 from sqlalchemy.orm import Session
 
@@ -109,6 +111,7 @@ class TestCleanDatasetTask:
             email=fake.email(),
             name=fake.name(),
             interface_language="en-US",
+            # pyrefly: ignore [bad-argument-type]
             status="active",
         )
 
@@ -119,6 +122,7 @@ class TestCleanDatasetTask:
         tenant = Tenant(
             name=fake.company(),
             plan="basic",
+            # pyrefly: ignore [bad-argument-type]
             status="normal",
         )
 

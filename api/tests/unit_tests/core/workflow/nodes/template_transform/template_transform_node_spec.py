@@ -110,6 +110,7 @@ class TestTemplateTransformNode:
         mock_renderer = MagicMock()
         node = TemplateTransformNode(
             id="test_node",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test_node", "data": node_data},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -124,8 +125,11 @@ class TestTemplateTransformNode:
 
         assert config["type"] == "template-transform"
         assert "config" in config
+        # pyrefly: ignore [not-iterable]
         assert "variables" in config["config"]
+        # pyrefly: ignore [not-iterable]
         assert "template" in config["config"]
+        # pyrefly: ignore [bad-index]
         assert config["config"]["template"] == "{{ arg1 }}"
 
     def test_version(self):
@@ -200,6 +204,7 @@ class TestTemplateTransformNode:
 
         node = TemplateTransformNode(
             id="test_node",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test_node", "data": node_data},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -304,6 +309,7 @@ class TestTemplateTransformNode:
 
         node = TemplateTransformNode(
             id="test_node",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test_node", "data": node_data},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -411,6 +417,7 @@ class TestTemplateTransformNode:
 
         node = TemplateTransformNode(
             id="test_node",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test_node", "data": node_data},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -450,6 +457,7 @@ class TestTemplateTransformNode:
 
         node = TemplateTransformNode(
             id="test_node",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test_node", "data": node_data},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -479,6 +487,7 @@ class TestTemplateTransformNode:
 
         node = TemplateTransformNode(
             id="test_node",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test_node", "data": node_data},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,
@@ -509,6 +518,7 @@ class TestTemplateTransformNode:
 
         node = TemplateTransformNode(
             id="test_node",
+            # pyrefly: ignore [bad-typed-dict-key]
             config={"id": "test_node", "data": node_data},
             graph_init_params=graph_init_params,
             graph_runtime_state=mock_graph_runtime_state,

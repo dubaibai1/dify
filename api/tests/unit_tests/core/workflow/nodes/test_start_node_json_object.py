@@ -34,6 +34,7 @@ def make_start_node(user_inputs, variables):
 
     return StartNode(
         id="start",
+        # pyrefly: ignore [bad-argument-type]
         config=config,
         graph_init_params=build_test_graph_init_params(
             workflow_id="wf",
@@ -208,6 +209,7 @@ def test_json_object_invalid_json_schema_string():
     )
 
     # Bypass pydantic type validation on assignment to simulate an invalid JSON schema string
+    # pyrefly: ignore [bad-assignment]
     variable.json_schema = "{invalid-json-schema"
 
     variables = [variable]
@@ -266,6 +268,7 @@ def test_start_node_outputs_full_variable_pool_snapshot():
     graph_runtime_state = GraphRuntimeState(variable_pool=variable_pool, start_at=time.perf_counter())
     node = StartNode(
         id="start",
+        # pyrefly: ignore [bad-argument-type]
         config=config,
         graph_init_params=build_test_graph_init_params(
             workflow_id="wf",
@@ -291,6 +294,7 @@ def test_start_node_outputs_full_variable_pool_snapshot():
 
 
 def _build_prefixed_variable(node_id: str, name: str, value: object) -> Variable:
+    # pyrefly: ignore [bad-return]
     return segment_to_variable(
         segment=build_segment(value),
         selector=(node_id, name),

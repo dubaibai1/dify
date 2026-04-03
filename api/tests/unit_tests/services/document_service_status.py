@@ -67,4 +67,5 @@ class TestDocumentServiceBatchUpdateDocumentStatus:
 
         # Act & Assert
         with pytest.raises(ValueError, match="Invalid action"):
+            # pyrefly: ignore [bad-argument-type]
             DocumentService.batch_update_document_status(dataset, document_ids, "invalid_action", user)

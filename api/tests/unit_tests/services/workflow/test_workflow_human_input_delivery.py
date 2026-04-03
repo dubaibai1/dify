@@ -67,7 +67,9 @@ def test_human_input_delivery_requires_draft_workflow():
 
     with pytest.raises(ValueError, match="Workflow not initialized"):
         service.test_human_input_delivery(
+            # pyrefly: ignore [bad-argument-type]
             app_model=app_model,
+            # pyrefly: ignore [bad-argument-type]
             account=account,
             node_id="node-1",
             delivery_method_id="delivery-1",
@@ -101,7 +103,9 @@ def test_human_input_delivery_allows_disabled_method(monkeypatch: pytest.MonkeyP
     account = SimpleNamespace(id="account-1")
 
     service.test_human_input_delivery(
+        # pyrefly: ignore [bad-argument-type]
         app_model=app_model,
+        # pyrefly: ignore [bad-argument-type]
         account=account,
         node_id="node-1",
         delivery_method_id=str(delivery_method.id),
@@ -137,7 +141,9 @@ def test_human_input_delivery_dispatches_to_test_service(monkeypatch: pytest.Mon
     account = SimpleNamespace(id="account-1")
 
     service.test_human_input_delivery(
+        # pyrefly: ignore [bad-argument-type]
         app_model=app_model,
+        # pyrefly: ignore [bad-argument-type]
         account=account,
         node_id="node-1",
         delivery_method_id=str(delivery_method.id),
@@ -176,7 +182,9 @@ def test_human_input_delivery_debug_mode_overrides_recipients(monkeypatch: pytes
     account = SimpleNamespace(id="account-1")
 
     service.test_human_input_delivery(
+        # pyrefly: ignore [bad-argument-type]
         app_model=app_model,
+        # pyrefly: ignore [bad-argument-type]
         account=account,
         node_id="node-1",
         delivery_method_id=str(delivery_method.id),

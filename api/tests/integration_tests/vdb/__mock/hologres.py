@@ -63,6 +63,7 @@ class MockSearchQuery:
                 results.append((0.1, row["id"], row["text"], row["meta"]))
             else:
                 # row format expected by _process_full_text_results: (id, text, meta, embedding, score)
+                # pyrefly: ignore [bad-argument-type]
                 results.append((row["id"], row["text"], row["meta"], row.get("embedding", []), 0.9))
         return results
 

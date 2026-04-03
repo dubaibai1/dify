@@ -83,6 +83,7 @@ def _build_node(form_content: str = "Please enter your name:\n\n{{#$output.name#
     repo = _FakeFormRepository(fake_form)
     return HumanInputNode(
         id="node-1",
+        # pyrefly: ignore [bad-argument-type]
         config=config,
         graph_init_params=graph_init_params,
         graph_runtime_state=graph_runtime_state,
@@ -148,6 +149,7 @@ def _build_timeout_node() -> HumanInputNode:
     repo = _FakeFormRepository(fake_form)
     return HumanInputNode(
         id="node-1",
+        # pyrefly: ignore [bad-argument-type]
         config=config,
         graph_init_params=graph_init_params,
         graph_runtime_state=graph_runtime_state,

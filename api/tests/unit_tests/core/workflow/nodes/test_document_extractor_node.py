@@ -48,6 +48,7 @@ def document_extractor_node(graph_init_params):
     http_client = Mock()
     node = DocumentExtractorNode(
         id="test_node_id",
+        # pyrefly: ignore [bad-argument-type]
         config=node_config,
         graph_init_params=graph_init_params,
         graph_runtime_state=Mock(),

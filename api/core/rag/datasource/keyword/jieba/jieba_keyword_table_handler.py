@@ -85,6 +85,7 @@ class JiebaKeywordTableHandler:
                 if self._lcut:
                     tokens = self._lcut(sentence)
                 elif callable(cut):
+                    # pyrefly: ignore [bad-argument-type]
                     tokens = list(cut(sentence))
                 else:
                     tokens = re.findall(r"\w+", sentence)

@@ -180,6 +180,7 @@ class FirecrawlApp:
                 time.sleep(backoff_factor * (2**attempt))
             else:
                 return response
+        # pyrefly: ignore [unbound-name]
         return response
 
     def _get_request(self, url, headers, retries=3, backoff_factor=0.5) -> httpx.Response:
@@ -189,6 +190,7 @@ class FirecrawlApp:
                 time.sleep(backoff_factor * (2**attempt))
             else:
                 return response
+        # pyrefly: ignore [unbound-name]
         return response
 
     def _handle_error(self, response, action):

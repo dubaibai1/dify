@@ -40,6 +40,7 @@ class AnalyticdbVector(BaseVector):
         self.analyticdb_vector._create_collection_if_not_exists(dimension)
         self.analyticdb_vector.add_texts(texts, embeddings)
 
+    # pyrefly: ignore [bad-override]
     def add_texts(self, documents: list[Document], embeddings: list[list[float]], **kwargs):
         self.analyticdb_vector.add_texts(documents, embeddings)
 
