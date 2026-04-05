@@ -1,8 +1,10 @@
 'use client'
 
-import type { Placement } from '@/app/components/base/ui/placement'
+import type { Placement } from '../internal/placement.js'
 import { Menu } from '@base-ui/react/menu'
+import { RiArrowRightSLine, RiCheckLine } from '@remixicon/react'
 import * as React from 'react'
+import { cn } from '../internal/cn.js'
 import {
   menuGroupLabelClassName,
   menuIndicatorClassName,
@@ -10,9 +12,8 @@ import {
   menuPopupBaseClassName,
   menuRowClassName,
   menuSeparatorClassName,
-} from '@/app/components/base/ui/menu-shared'
-import { parsePlacement } from '@/app/components/base/ui/placement'
-import { cn } from '@/utils/classnames'
+} from '../internal/menu-shared.js'
+import { parsePlacement } from '../internal/placement.js'
 
 export const DropdownMenu = Menu.Root
 export const DropdownMenuTrigger = Menu.Trigger
@@ -41,7 +42,7 @@ export function DropdownMenuRadioItemIndicator({
       className={cn(menuIndicatorClassName, className)}
       {...props}
     >
-      <span aria-hidden className="i-ri-check-line h-4 w-4" />
+      <RiCheckLine aria-hidden className="h-4 w-4" />
     </Menu.RadioItemIndicator>
   )
 }
@@ -67,7 +68,7 @@ export function DropdownMenuCheckboxItemIndicator({
       className={cn(menuIndicatorClassName, className)}
       {...props}
     >
-      <span aria-hidden className="i-ri-check-line h-4 w-4" />
+      <RiCheckLine aria-hidden className="h-4 w-4" />
     </Menu.CheckboxItemIndicator>
   )
 }
@@ -105,10 +106,10 @@ type DropdownMenuPopupRenderProps = Required<Pick<DropdownMenuContentProps, 'chi
   placement: Placement
   sideOffset: number
   alignOffset: number
-  className?: string
-  popupClassName?: string
-  positionerProps?: DropdownMenuContentProps['positionerProps']
-  popupProps?: DropdownMenuContentProps['popupProps']
+  className?: string | undefined
+  popupClassName?: string | undefined
+  positionerProps?: DropdownMenuContentProps['positionerProps'] | undefined
+  popupProps?: DropdownMenuContentProps['popupProps'] | undefined
 }
 
 function renderDropdownMenuPopup({
@@ -186,20 +187,20 @@ export function DropdownMenuSubTrigger({
       {...props}
     >
       {children}
-      <span aria-hidden className="i-ri-arrow-right-s-line ml-auto size-4 shrink-0 text-text-tertiary" />
+      <RiArrowRightSLine aria-hidden className="ml-auto size-4 shrink-0 text-text-tertiary" />
     </Menu.SubmenuTrigger>
   )
 }
 
 type DropdownMenuSubContentProps = {
   children: React.ReactNode
-  placement?: Placement
-  sideOffset?: number
-  alignOffset?: number
-  className?: string
-  popupClassName?: string
-  positionerProps?: DropdownMenuContentProps['positionerProps']
-  popupProps?: DropdownMenuContentProps['popupProps']
+  placement?: Placement | undefined
+  sideOffset?: number | undefined
+  alignOffset?: number | undefined
+  className?: string | undefined
+  popupClassName?: string | undefined
+  positionerProps?: DropdownMenuContentProps['positionerProps'] | undefined
+  popupProps?: DropdownMenuContentProps['popupProps'] | undefined
 }
 
 export function DropdownMenuSubContent({
@@ -271,3 +272,5 @@ export function DropdownMenuSeparator({
     />
   )
 }
+
+export type { Placement }
