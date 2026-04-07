@@ -1686,7 +1686,7 @@ class TestDatasetPermissionService:
                 ["user-1", "user-2"],
             )
 
-        mock_db.session.query.return_value.where.return_value.delete.assert_called_once()
+        mock_db.session.execute.assert_called_once()
         mock_db.session.add_all.assert_called_once()
         mock_db.session.commit.assert_called_once()
 

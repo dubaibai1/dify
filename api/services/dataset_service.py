@@ -1234,11 +1234,11 @@ class DatasetService:
                 "count": len(dataset_auto_disable_logs),
             }
             return non_empty_logs
-        empty_logs: AutoDisableLogsDict = {
+        no_logs: AutoDisableLogsDict = {
             "document_ids": [],
             "count": 0,
         }
-        return empty_logs
+        return no_logs
 
 
 class DocumentService:
