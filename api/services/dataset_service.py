@@ -1215,11 +1215,11 @@ class DatasetService:
         assert current_user.current_tenant_id is not None
         features = FeatureService.get_features(current_user.current_tenant_id)
         if not features.billing.enabled or features.billing.subscription.plan == CloudPlan.SANDBOX:
-            result: AutoDisableLogsDict = {
+            empty_logs: AutoDisableLogsDict = {
                 "document_ids": [],
                 "count": 0,
             }
-            return result
+            return empty_logs
         # get recent 30 days auto disable logs
         start_date = datetime.datetime.now() - datetime.timedelta(days=30)
         dataset_auto_disable_logs = db.session.scalars(
@@ -1229,16 +1229,16 @@ class DatasetService:
             )
         ).all()
         if dataset_auto_disable_logs:
-            result: AutoDisableLogsDict = {
+            non_empty_logs: AutoDisableLogsDict = {
                 "document_ids": [log.document_id for log in dataset_auto_disable_logs],
                 "count": len(dataset_auto_disable_logs),
             }
-            return result
-        result: AutoDisableLogsDict = {
+            return non_empty_logs
+        empty_logs: AutoDisableLogsDict = {
             "document_ids": [],
             "count": 0,
         }
-        return result
+        return empty_logs
 
 
 class DocumentService:
@@ -4070,11 +4070,11 @@ class DatasetPermissionService:
         try:
             db.session.execute(delete(DatasetPermission).where(DatasetPermission.dataset_id == dataset_id))
             permissions = []
-            for user in user_list:
+            for account_id in cls._normalize_partial_member_list(user_list):
                 permission = DatasetPermission(
                     tenant_id=tenant_id,
                     dataset_id=dataset_id,
-                    account_id=user["user_id"],
+                    account_id=account_id,
                 )
                 permissions.append(permission)
 

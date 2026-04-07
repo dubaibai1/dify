@@ -26,6 +26,30 @@ class RagPipelineDatasetCreateEntity(BaseModel):
     partial_member_list: list[str] | None = None
     yaml_content: str | None = None
 
+    @field_validator("partial_member_list", mode="before")
+    @classmethod
+    def normalize_partial_member_list(cls, value):
+        if value is None:
+            return None
+        if not isinstance(value, list):
+            return value
+        normalized: list[str] = []
+        for item in value:
+            if isinstance(item, str):
+                normalized.append(item)
+            elif isinstance(item, dict):
+                if "user_id" in item:
+                    normalized.append(str(item["user_id"]))
+                elif "account_id" in item:
+                    normalized.append(str(item["account_id"]))
+                elif "id" in item:
+                    normalized.append(str(item["id"]))
+                else:
+                    raise ValueError("Invalid partial member list item format.")
+            else:
+                raise ValueError("Invalid partial member list item format.")
+        return normalized
+
 
 class RerankingModelConfig(BaseModel):
     """
