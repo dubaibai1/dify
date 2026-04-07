@@ -5,6 +5,7 @@ import {
   apiDir,
   apiEnvExampleFile,
   dockerDir,
+  dockerEnvFile,
   e2eDir,
   ensureFileExists,
   ensureLineInFile,
@@ -51,11 +52,37 @@ const composeArgs = [
 
 const getApiEnvironment = async () => {
   const envFromExample = await readSimpleDotenv(apiEnvExampleFile)
-
-  return {
+  const env: Record<string, string> = {
     ...envFromExample,
     FLASK_APP: 'app.py',
   }
+
+  try {
+    await access(dockerEnvFile)
+    const dockerEnv = await readSimpleDotenv(dockerEnvFile)
+
+    const dbPassword = dockerEnv.DB_PASSWORD?.trim()
+    if (dbPassword) env.DB_PASSWORD = dbPassword
+
+    const redisPassword = dockerEnv.REDIS_PASSWORD?.trim()
+    if (redisPassword) {
+      env.REDIS_PASSWORD = redisPassword
+      const broker = env.CELERY_BROKER_URL
+      if (broker) {
+        env.CELERY_BROKER_URL = broker.replace(
+          /^redis:\/\/:([^@]*)@/,
+          `redis://:${encodeURIComponent(redisPassword)}@`,
+        )
+      }
+    }
+
+    const pluginInnerKey = dockerEnv.PLUGIN_DIFY_INNER_API_KEY?.trim()
+    if (pluginInnerKey) env.INNER_API_KEY_FOR_PLUGIN = pluginInnerKey
+  } catch {
+    // docker/.env may not exist in local runs.
+  }
+
+  return env
 }
 
 const getServiceContainerId = async (service: string) => {

@@ -7,7 +7,7 @@ import time
 import uuid
 from collections import Counter
 from collections.abc import Mapping, Sequence
-from typing import Any, Literal, cast
+from typing import Any, Literal, TypedDict, cast
 
 import sqlalchemy as sa
 from graphon.file import helpers as file_helpers
@@ -206,7 +206,8 @@ class DatasetService:
         else:
             mode = str(DocumentService.DEFAULT_RULES["mode"])
             rules = dict(DocumentService.DEFAULT_RULES.get("rules") or {})
-        return {"mode": mode, "rules": rules}
+        result: ProcessRulesDict = {"mode": mode, "rules": rules}
+        return result
 
     @staticmethod
     def get_datasets_by_ids(ids, tenant_id):
@@ -1214,10 +1215,11 @@ class DatasetService:
         assert current_user.current_tenant_id is not None
         features = FeatureService.get_features(current_user.current_tenant_id)
         if not features.billing.enabled or features.billing.subscription.plan == CloudPlan.SANDBOX:
-            return {
+            result: AutoDisableLogsDict = {
                 "document_ids": [],
                 "count": 0,
             }
+            return result
         # get recent 30 days auto disable logs
         start_date = datetime.datetime.now() - datetime.timedelta(days=30)
         dataset_auto_disable_logs = db.session.scalars(
@@ -1227,14 +1229,16 @@ class DatasetService:
             )
         ).all()
         if dataset_auto_disable_logs:
-            return {
+            result: AutoDisableLogsDict = {
                 "document_ids": [log.document_id for log in dataset_auto_disable_logs],
                 "count": len(dataset_auto_disable_logs),
             }
-        return {
+            return result
+        result: AutoDisableLogsDict = {
             "document_ids": [],
             "count": 0,
         }
+        return result
 
 
 class DocumentService:
