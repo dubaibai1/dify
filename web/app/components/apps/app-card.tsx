@@ -8,11 +8,12 @@ import type { EnvironmentVariable } from '@/app/components/workflow/types'
 import type { App } from '@/types/app'
 import { RiBuildingLine, RiGlobalLine, RiLockLine, RiMoreFill, RiVerifiedBadgeLine } from '@remixicon/react'
 import * as React from 'react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useCallback, useEffect, useId, useMemo, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import { AppTypeIcon } from '@/app/components/app/type-selector'
 import AppIcon from '@/app/components/base/app-icon'
 import Divider from '@/app/components/base/divider'
+import Input from '@/app/components/base/input'
 import CustomPopover from '@/app/components/base/popover'
 import TagSelector from '@/app/components/base/tag-management/selector'
 import Tooltip from '@/app/components/base/tooltip'
@@ -62,13 +63,14 @@ const AccessControl = dynamic(() => import('@/app/components/app/app-access-cont
   ssr: false,
 })
 
-export type AppCardProps = {
+type AppCardProps = {
   app: App
   onRefresh?: () => void
 }
 
 const AppCard = ({ app, onRefresh }: AppCardProps) => {
   const { t } = useTranslation()
+  const deleteAppNameInputId = useId()
   const systemFeatures = useGlobalPublicStore(s => s.systemFeatures)
   const { isCurrentWorkspaceEditor } = useAppContext()
   const { onPlanInfoChanged } = useProviderContext()
@@ -89,13 +91,11 @@ const AppCard = ({ app, onRefresh }: AppCardProps) => {
       await mutateDeleteApp(app.id)
       toast.success(t('appDeleted', { ns: 'app' }))
       onPlanInfoChanged()
+      setShowConfirmDelete(false)
+      setConfirmDeleteInput('')
     }
     catch (e: any) {
       toast.error(`${t('appDeleteFailed', { ns: 'app' })}${'message' in e ? `: ${e.message}` : ''}`)
-    }
-    finally {
-      setShowConfirmDelete(false)
-      setConfirmDeleteInput('')
     }
   }, [app.id, mutateDeleteApp, onPlanInfoChanged, t])
 
@@ -107,6 +107,16 @@ const AppCard = ({ app, onRefresh }: AppCardProps) => {
     if (!open)
       setConfirmDeleteInput('')
   }, [isDeleting])
+
+  const isDeleteConfirmDisabled = isDeleting || confirmDeleteInput !== app.name
+
+  const onDeleteDialogSubmit: React.FormEventHandler<HTMLFormElement> = useCallback((e) => {
+    e.preventDefault()
+    if (isDeleteConfirmDisabled)
+      return
+
+    void onConfirmDelete()
+  }, [isDeleteConfirmDisabled, onConfirmDelete])
 
   const onEdit: CreateAppModalProps['onConfirm'] = useCallback(async ({
     name,
@@ -357,7 +367,7 @@ const AppCard = ({ app, onRefresh }: AppCardProps) => {
           e.preventDefault()
           getRedirection(isCurrentWorkspaceEditor, app, push)
         }}
-        className="group relative col-span-1 inline-flex h-[160px] cursor-pointer flex-col rounded-xl border-[1px] border-solid border-components-card-border bg-components-card-bg shadow-sm transition-all duration-200 ease-in-out hover:shadow-lg"
+        className="group relative col-span-1 inline-flex h-[160px] cursor-pointer flex-col rounded-xl border border-solid border-components-card-border bg-components-card-bg shadow-sm transition-all duration-200 ease-in-out hover:shadow-lg"
       >
         <div className="flex h-[66px] shrink-0 grow-0 items-center gap-3 px-[14px] pb-3 pt-[14px]">
           <div className="relative shrink-0">
@@ -370,7 +380,7 @@ const AppCard = ({ app, onRefresh }: AppCardProps) => {
             />
             <AppTypeIcon type={app.mode} wrapperClassName="absolute -bottom-0.5 -right-0.5 w-4 h-4 shadow-sm" className="h-3 w-3" />
           </div>
-          <div className="w-0 grow py-[1px]">
+          <div className="w-0 grow py-px">
             <div className="flex items-center text-sm font-semibold leading-5 text-text-secondary">
               <div className="truncate" title={app.name}>{app.name}</div>
             </div>
@@ -421,7 +431,7 @@ const AppCard = ({ app, onRefresh }: AppCardProps) => {
                   e.preventDefault()
                 }}
               >
-                <div className="mr-[41px] w-full grow group-hover:!mr-0">
+                <div className="mr-[41px] w-full grow group-hover:mr-0!">
                   <TagSelector
                     position="bl"
                     type="app"
@@ -433,8 +443,8 @@ const AppCard = ({ app, onRefresh }: AppCardProps) => {
                   />
                 </div>
               </div>
-              <div className="mx-1 !hidden h-[14px] w-[1px] shrink-0 bg-divider-regular group-hover:!flex" />
-              <div className="!hidden shrink-0 group-hover:!flex">
+              <div className="mx-1 hidden! h-[14px] w-px shrink-0 bg-divider-regular group-hover:flex!" />
+              <div className="hidden! shrink-0 group-hover:flex!">
                 <CustomPopover
                   htmlContent={<Operations />}
                   position="br"
@@ -449,15 +459,15 @@ const AppCard = ({ app, onRefresh }: AppCardProps) => {
                   )}
                   btnClassName={open =>
                     cn(
-                      open ? '!bg-state-base-hover !shadow-none' : '!bg-transparent',
-                      'h-8 w-8 rounded-md border-none !p-2 hover:!bg-state-base-hover',
+                      open ? 'bg-state-base-hover! shadow-none!' : 'bg-transparent!',
+                      'h-8 w-8 rounded-md border-none p-2! hover:bg-state-base-hover!',
                     )}
                   popupClassName={
                     (app.mode === AppModeEnum.COMPLETION || app.mode === AppModeEnum.CHAT)
-                      ? '!w-[256px] translate-x-[-224px]'
-                      : '!w-[216px] translate-x-[-128px]'
+                      ? 'w-[256px]! translate-x-[-224px]'
+                      : 'w-[216px]! translate-x-[-128px]'
                   }
-                  className="!z-20 h-fit"
+                  className="z-20! h-fit"
                 />
               </div>
             </>
@@ -503,38 +513,51 @@ const AppCard = ({ app, onRefresh }: AppCardProps) => {
       )}
       <AlertDialog open={showConfirmDelete} onOpenChange={onDeleteDialogOpenChange}>
         <AlertDialogContent>
-          <div className="flex flex-col gap-2 px-6 pb-4 pt-6">
-            <AlertDialogTitle className="text-text-primary title-2xl-semi-bold">
-              {t('deleteAppConfirmTitle', { ns: 'app' })}
-            </AlertDialogTitle>
-            <AlertDialogDescription className="w-full whitespace-pre-wrap break-words text-text-tertiary system-md-regular">
-              {t('deleteAppConfirmContent', { ns: 'app' })}
-            </AlertDialogDescription>
-            <div className="mt-2">
-              <label className="mb-1 block text-text-secondary system-sm-regular">
-                {t('deleteAppConfirmInputLabel', { ns: 'app', appName: app.name })}
-              </label>
-              <input
-                type="text"
-                className="border-components-input-border bg-components-input-bg focus:border-components-input-border-focus focus:ring-components-input-border-focus h-9 w-full rounded-lg border px-3 text-sm text-text-primary placeholder:text-text-quaternary focus:outline-none focus:ring-1"
-                placeholder={t('deleteAppConfirmInputPlaceholder', { ns: 'app' })}
-                value={confirmDeleteInput}
-                onChange={e => setConfirmDeleteInput(e.target.value)}
-              />
+          <form className="flex flex-col" onSubmit={onDeleteDialogSubmit}>
+            <div className="flex flex-col gap-2 px-6 pt-6 pb-4">
+              <AlertDialogTitle className="title-2xl-semi-bold text-text-primary">
+                {t('deleteAppConfirmTitle', { ns: 'app' })}
+              </AlertDialogTitle>
+              <AlertDialogDescription className="w-full system-md-regular wrap-break-word whitespace-pre-wrap text-text-tertiary">
+                {t('deleteAppConfirmContent', { ns: 'app' })}
+              </AlertDialogDescription>
+              <div className="mt-2">
+                <label htmlFor={deleteAppNameInputId} className="mb-1 block system-sm-regular text-text-secondary">
+                  <Trans
+                    i18nKey="deleteAppConfirmInputLabel"
+                    ns="app"
+                    values={{ appName: app.name }}
+                    components={{
+                      appName: <span className="system-sm-semibold text-text-primary" translate="no" />,
+                    }}
+                  />
+                </label>
+                <Input
+                  id={deleteAppNameInputId}
+                  name="confirm-app-name"
+                  type="text"
+                  autoComplete="off"
+                  spellCheck={false}
+                  placeholder={t('deleteAppConfirmInputPlaceholder', { ns: 'app' })}
+                  value={confirmDeleteInput}
+                  onChange={e => setConfirmDeleteInput(e.target.value)}
+                  className="border-components-input-border-hover bg-components-input-bg-normal focus:border-components-input-border-active focus:bg-components-input-bg-active"
+                />
+              </div>
             </div>
-          </div>
-          <AlertDialogActions>
-            <AlertDialogCancelButton disabled={isDeleting}>
-              {t('operation.cancel', { ns: 'common' })}
-            </AlertDialogCancelButton>
-            <AlertDialogConfirmButton
-              loading={isDeleting}
-              disabled={isDeleting || confirmDeleteInput !== app.name}
-              onClick={onConfirmDelete}
-            >
-              {t('operation.confirm', { ns: 'common' })}
-            </AlertDialogConfirmButton>
-          </AlertDialogActions>
+            <AlertDialogActions>
+              <AlertDialogCancelButton type="button" disabled={isDeleting}>
+                {t('operation.cancel', { ns: 'common' })}
+              </AlertDialogCancelButton>
+              <AlertDialogConfirmButton
+                type="submit"
+                loading={isDeleting}
+                disabled={isDeleteConfirmDisabled}
+              >
+                {t('operation.confirm', { ns: 'common' })}
+              </AlertDialogConfirmButton>
+            </AlertDialogActions>
+          </form>
         </AlertDialogContent>
       </AlertDialog>
       {secretEnvList.length > 0 && (
