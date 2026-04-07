@@ -160,7 +160,7 @@ class DatasetUpdatePayload(BaseModel):
     embedding_model_provider: str | None = None
     retrieval_model: dict[str, Any] | None = None
     summary_index_setting: dict[str, Any] | None = None
-    partial_member_list: list[str] | list[dict[str, str]] | None = None
+    partial_member_list: list[str] | None = None
     external_retrieval_model: dict[str, Any] | None = None
     external_knowledge_id: str | None = None
     external_knowledge_api_id: str | None = None
