@@ -16,7 +16,7 @@ import { useFileUploadConfig } from '@/service/use-common'
 import { Theme } from '@/types/app'
 import { cn } from '@/utils/classnames'
 
-export type Props = {
+type Props = {
   file: FileItem | undefined
   updateFile: (file?: FileItem) => void
 }
@@ -185,7 +185,7 @@ const CSVUploader: FC<Props> = ({ file, updateFile }) => {
           <div className={cn('group flex h-20 items-center rounded-xl border border-components-panel-border bg-components-panel-bg-blur px-6 text-sm font-normal', 'hover:border-divider-subtle hover:bg-components-panel-on-panel-item-bg-hover')}>
             <CSVIcon className="shrink-0" />
             <div className="ml-2 flex w-0 grow">
-              <span className="max-w-[calc(100%_-_30px)] overflow-hidden text-ellipsis whitespace-nowrap text-text-primary">{file.file.name.replace(/.csv$/, '')}</span>
+              <span className="max-w-[calc(100%-30px)] overflow-hidden text-ellipsis whitespace-nowrap text-text-primary">{file.file.name.replace(/.csv$/, '')}</span>
               <span className="shrink-0 text-text-secondary">.csv</span>
             </div>
             <div className="hidden items-center group-hover:flex">
