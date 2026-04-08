@@ -1028,18 +1028,8 @@ class Conversation(Base):
     __table_args__ = (
         sa.PrimaryKeyConstraint("id", name="conversation_pkey"),
         sa.Index("conversation_app_from_user_idx", "app_id", "from_source", "from_end_user_id"),
-        sa.Index(
-            "conversation_app_created_at_idx",
-            "app_id",
-            sa.text("created_at DESC"),
-            postgresql_where=sa.text("is_deleted IS false"),
-        ),
-        sa.Index(
-            "conversation_app_updated_at_idx",
-            "app_id",
-            sa.text("updated_at DESC"),
-            postgresql_where=sa.text("is_deleted IS false"),
-        ),
+        sa.Index("conversation_app_created_at_idx", "app_id", sa.text("created_at DESC")),
+        sa.Index("conversation_app_updated_at_idx", "app_id", sa.text("updated_at DESC")),
     )
 
     id: Mapped[str] = mapped_column(StringUUID, default=lambda: str(uuid4()))
@@ -1083,8 +1073,6 @@ class Conversation(Base):
     message_annotations = db.relationship(
         "MessageAnnotation", backref="conversation", lazy="select", passive_deletes="all"
     )
-
-    is_deleted: Mapped[bool] = mapped_column(sa.Boolean, nullable=False, server_default=sa.text("false"))
 
     @property
     def inputs(self) -> dict[str, Any]:
