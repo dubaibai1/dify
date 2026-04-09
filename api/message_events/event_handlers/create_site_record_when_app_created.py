@@ -1,5 +1,5 @@
-from message_events.app_event import app_was_created
 from extensions.ext_database import db
+from message_events.app_event import app_was_created
 from models.enums import CustomizeTokenStrategy
 from models.model import Site
 

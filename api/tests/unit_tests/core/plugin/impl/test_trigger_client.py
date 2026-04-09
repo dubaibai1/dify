@@ -78,7 +78,10 @@ class TestPluginTriggerClient:
                 ]
             }
             transformed = transformer(payload)
-            assert transformed["data"][0]["declaration"]["message_events"][0]["identity"]["provider"] == "org/plugin/remote"
+            assert (
+                transformed["data"][0]["declaration"]["message_events"][0]["identity"]["provider"]
+                == "org/plugin/remote"
+            )
             return [provider]
 
         request_mock = mocker.patch.object(client, "_request_with_plugin_daemon_response", side_effect=fake_request)
@@ -97,7 +100,9 @@ class TestPluginTriggerClient:
             transformer = kwargs["transformer"]
             payload = {"data": {"declaration": {"message_events": [{"identity": {"provider": "old"}}]}}}
             transformed = transformer(payload)
-            assert transformed["data"]["declaration"]["message_events"][0]["identity"]["provider"] == "org/plugin/provider"
+            assert (
+                transformed["data"]["declaration"]["message_events"][0]["identity"]["provider"] == "org/plugin/provider"
+            )
             return provider
 
         request_mock = mocker.patch.object(client, "_request_with_plugin_daemon_response", side_effect=fake_request)

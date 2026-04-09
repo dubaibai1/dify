@@ -9,7 +9,6 @@ from werkzeug.exceptions import Unauthorized
 
 from configs import dify_config
 from constants.languages import languages
-from message_events.tenant_event import tenant_was_created
 from extensions.ext_database import db
 from libs.datetime_utils import naive_utc_now
 from libs.helper import extract_remote_ip
@@ -19,6 +18,7 @@ from libs.token import (
     set_csrf_token_to_cookie,
     set_refresh_token_to_cookie,
 )
+from message_events.tenant_event import tenant_was_created
 from models import Account, AccountStatus
 from services.account_service import AccountService, RegisterService, TenantService
 from services.billing_service import BillingService

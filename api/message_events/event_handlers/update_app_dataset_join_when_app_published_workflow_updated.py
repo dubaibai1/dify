@@ -4,8 +4,8 @@ from graphon.nodes import BuiltinNodeTypes
 from sqlalchemy import delete, select
 
 from core.workflow.nodes.knowledge_retrieval.entities import KnowledgeRetrievalNodeData
-from message_events.app_event import app_published_workflow_was_updated
 from extensions.ext_database import db
+from message_events.app_event import app_published_workflow_was_updated
 from models.dataset import AppDatasetJoin
 from models.workflow import Workflow
 
