@@ -407,11 +407,10 @@ class DatasetApi(DatasetApiResource):
 
         result_data = cast(dict[str, Any], marshal(dataset, dataset_detail_fields))
         assert isinstance(current_user, Account)
-        tenant_id = current_user.current_tenant_id
 
         if validated_partial_member_ids is not None:
             DatasetPermissionService.replace_partial_member_rows(
-                tenant_id, dataset_id_str, validated_partial_member_ids
+                dataset.tenant_id, dataset_id_str, validated_partial_member_ids
             )
             db.session.commit()
         # clear partial member list when permission is only_me or all_team_members
