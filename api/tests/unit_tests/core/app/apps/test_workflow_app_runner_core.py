@@ -21,7 +21,6 @@ from graphon.graph_events import (
     NodeRunSucceededEvent,
 )
 from graphon.node_events import NodeRunResult
-from graphon.runtime import GraphRuntimeState, VariablePool
 from graphon.variables.variables import StringVariable
 
 from core.app.apps.workflow_app_runner import WorkflowBasedAppRunner
@@ -40,6 +39,7 @@ from core.app.entities.queue_entities import (
     QueueWorkflowSucceededEvent,
 )
 from core.workflow.system_variables import default_system_variables
+from graphon.runtime import GraphRuntimeState, VariablePool
 
 
 class TestWorkflowBasedAppRunner:

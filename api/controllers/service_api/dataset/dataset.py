@@ -16,8 +16,8 @@ from controllers.service_api.wraps import (
     cloud_edition_billing_rate_limit_check,
 )
 from core.plugin.impl.model_runtime_factory import create_plugin_provider_manager
-from extensions.ext_database import db
 from core.rag.index_processor.constant.index_type import IndexTechniqueType
+from extensions.ext_database import db
 from fields.dataset_fields import dataset_detail_fields
 from fields.tag_fields import DataSetTag
 from libs.login import current_user
@@ -373,10 +373,7 @@ class DatasetApi(DatasetApiResource):
             )
 
         validated_partial_member_ids: list[str] | None = None
-        if (
-            payload.partial_member_list is not None
-            and payload.permission == DatasetPermissionEnum.PARTIAL_TEAM
-        ):
+        if payload.partial_member_list is not None and payload.permission == DatasetPermissionEnum.PARTIAL_TEAM:
             assert isinstance(current_user, Account)
             tenant_id_for_validation = current_user.current_tenant_id
             assert tenant_id_for_validation is not None
@@ -388,9 +385,7 @@ class DatasetApi(DatasetApiResource):
                 raise BadRequest(str(exc)) from exc
 
         partial_list_for_check = (
-            validated_partial_member_ids
-            if validated_partial_member_ids is not None
-            else payload.partial_member_list
+            validated_partial_member_ids if validated_partial_member_ids is not None else payload.partial_member_list
         )
         # The role of the current user in the ta table must be admin, owner, editor, or dataset_operator
         DatasetPermissionService.check_permission(

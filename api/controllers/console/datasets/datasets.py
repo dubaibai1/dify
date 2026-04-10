@@ -521,10 +521,7 @@ class DatasetApi(Resource):
         payload_data = payload.model_dump(exclude_unset=True)
 
         validated_partial_member_ids: list[str] | None = None
-        if (
-            payload.partial_member_list is not None
-            and payload.permission == DatasetPermissionEnum.PARTIAL_TEAM
-        ):
+        if payload.partial_member_list is not None and payload.permission == DatasetPermissionEnum.PARTIAL_TEAM:
             try:
                 validated_partial_member_ids = DatasetPermissionService.parse_and_validate_partial_member_ids(
                     current_tenant_id, payload.partial_member_list
@@ -533,14 +530,10 @@ class DatasetApi(Resource):
                 raise BadRequest(str(exc)) from exc
 
         partial_list_for_check = (
-            validated_partial_member_ids
-            if validated_partial_member_ids is not None
-            else payload.partial_member_list
+            validated_partial_member_ids if validated_partial_member_ids is not None else payload.partial_member_list
         )
         # The role of the current user in the ta table must be admin, owner, editor, or dataset_operator
-        DatasetPermissionService.check_permission(
-            current_user, dataset, payload.permission, partial_list_for_check
-        )
+        DatasetPermissionService.check_permission(current_user, dataset, payload.permission, partial_list_for_check)
 
         dataset = DatasetService.update_dataset(dataset_id_str, payload_data, current_user)
 

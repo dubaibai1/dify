@@ -34,6 +34,7 @@ from core.workflow.nodes.knowledge_retrieval.knowledge_retrieval_node import Kno
 
 if TYPE_CHECKING:
     from graphon.entities import GraphInitParams
+
     from graphon.runtime import GraphRuntimeState
 
     from .test_mock_config import MockConfig
@@ -622,6 +623,7 @@ class MockIterationNode(MockNodeMixin, IterationNode):
         from graphon.graph import Graph
         from graphon.graph_engine import GraphEngine, GraphEngineConfig
         from graphon.graph_engine.command_channels import InMemoryChannel
+
         from graphon.runtime import GraphRuntimeState
 
         # Import our MockNodeFactory instead of DifyNodeFactory
@@ -694,6 +696,7 @@ class MockLoopNode(MockNodeMixin, LoopNode):
         from graphon.graph import Graph
         from graphon.graph_engine import GraphEngine, GraphEngineConfig
         from graphon.graph_engine.command_channels import InMemoryChannel
+
         from graphon.runtime import GraphRuntimeState
 
         # Import our MockNodeFactory instead of DifyNodeFactory

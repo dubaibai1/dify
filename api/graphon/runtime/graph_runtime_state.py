@@ -8,12 +8,11 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, ClassVar, Protocol
 
-from pydantic import BaseModel, Field
-from pydantic.json import pydantic_encoder
-
 from graphon.enums import NodeExecutionType, NodeState, NodeType
 from graphon.model_runtime.entities.llm_entities import LLMUsage
 from graphon.runtime.variable_pool import VariablePool
+from pydantic import BaseModel, Field
+from pydantic.json import pydantic_encoder
 
 if TYPE_CHECKING:
     from graphon.entities import GraphInitParams

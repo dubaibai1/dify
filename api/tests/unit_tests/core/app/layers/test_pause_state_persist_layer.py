@@ -13,7 +13,6 @@ from graphon.graph_events import (
     GraphRunStartedEvent,
     GraphRunSucceededEvent,
 )
-from graphon.runtime import ReadOnlyVariablePool
 from graphon.variables.segments import Segment
 
 from core.app.app_config.entities import WorkflowUIBasedAppConfig
@@ -25,6 +24,7 @@ from core.app.layers.pause_state_persist_layer import (
     _WorkflowGenerateEntityWrapper,
 )
 from core.workflow.system_variables import SystemVariableKey
+from graphon.runtime import ReadOnlyVariablePool
 from models.model import AppMode
 from repositories.factory import DifyAPIRepositoryFactory
 

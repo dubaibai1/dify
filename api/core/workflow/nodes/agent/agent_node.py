@@ -23,6 +23,7 @@ from .strategy_protocols import AgentStrategyPresentationProvider, AgentStrategy
 
 if TYPE_CHECKING:
     from graphon.entities import GraphInitParams
+
     from graphon.runtime import GraphRuntimeState
 
 
