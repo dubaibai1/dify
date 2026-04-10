@@ -34,7 +34,7 @@ from extensions.ext_redis import redis_client
 from libs import helper
 from libs.datetime_utils import naive_utc_now
 from libs.login import current_user
-from models import Account, TenantAccountRole
+from models import Account, TenantAccountJoin, TenantAccountRole
 from models.dataset import (
     AppDatasetJoin,
     ChildChunk,
@@ -4025,6 +4025,54 @@ class DatasetCollectionBindingService:
 
 
 class DatasetPermissionService:
+    @classmethod
+    def parse_and_validate_partial_member_ids(cls, tenant_id: str, user_list: list[Any]) -> list[str]:
+        """
+        Normalize partial_member_list payload and ensure each id is a UUID that belongs to the tenant.
+
+        Call this before persisting dataset permission changes so invalid placeholders (e.g. "user_id_1")
+        fail fast with ValueError instead of causing a 500 or leaving partial_members without usable rows.
+        """
+        if not user_list:
+            raise ValueError("partial_member_list must contain at least one workspace member account id.")
+        normalized = cls._normalize_partial_member_list(user_list)
+        canonical_ids: list[str] = []
+        for raw in normalized:
+            try:
+                canonical_ids.append(str(uuid.UUID(raw)))
+            except ValueError as exc:
+                raise ValueError(
+                    f"Invalid account id in partial_member_list: {raw!r}. "
+                    "Each entry must be a workspace member's account UUID (see workspace members API); "
+                    "placeholder strings such as 'user_id_1' are not accepted."
+                ) from exc
+
+        unique_ids = list(dict.fromkeys(canonical_ids))
+        stmt = select(TenantAccountJoin.account_id).where(
+            TenantAccountJoin.tenant_id == tenant_id,
+            TenantAccountJoin.account_id.in_(unique_ids),
+        )
+        found_ids = set(db.session.scalars(stmt).all())
+        missing = [aid for aid in unique_ids if aid not in found_ids]
+        if missing:
+            raise ValueError(
+                "partial_member_list references account ids that are not members of this workspace: "
+                + ", ".join(missing)
+            )
+        return unique_ids
+
+    @classmethod
+    def replace_partial_member_rows(cls, tenant_id: str, dataset_id: str, account_ids: list[str]) -> None:
+        """Replace DatasetPermission rows for a dataset without committing."""
+        db.session.execute(delete(DatasetPermission).where(DatasetPermission.dataset_id == dataset_id))
+        if not account_ids:
+            return
+        permissions = [
+            DatasetPermission(tenant_id=tenant_id, dataset_id=dataset_id, account_id=account_id)
+            for account_id in account_ids
+        ]
+        db.session.add_all(permissions)
+
     @staticmethod
     def _normalize_partial_member_list(user_list: list[Any]) -> list[str]:
         """
@@ -4068,17 +4116,11 @@ class DatasetPermissionService:
     @classmethod
     def update_partial_member_list(cls, tenant_id, dataset_id, user_list):
         try:
-            db.session.execute(delete(DatasetPermission).where(DatasetPermission.dataset_id == dataset_id))
-            permissions = []
-            for account_id in cls._normalize_partial_member_list(user_list):
-                permission = DatasetPermission(
-                    tenant_id=tenant_id,
-                    dataset_id=dataset_id,
-                    account_id=account_id,
-                )
-                permissions.append(permission)
-
-            db.session.add_all(permissions)
+            if user_list:
+                account_ids = cls.parse_and_validate_partial_member_ids(tenant_id, user_list)
+            else:
+                account_ids = []
+            cls.replace_partial_member_rows(tenant_id, dataset_id, account_ids)
             db.session.commit()
         except Exception as e:
             db.session.rollback()

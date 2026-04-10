@@ -311,23 +311,6 @@ class TestEmailDeliveryTestHandler:
         handler = EmailDeliveryTestHandler(session_factory=MagicMock())
         assert handler._query_workspace_member_emails(tenant_id="t1", user_ids=[]) == {}
 
-<<<<<<< HEAD:api/tests/unit_tests/services/test_human_input_delivery_test_service.py
-        # user_ids is None (all)
-        mock_execute = MagicMock()
-        mock_tuples = MagicMock()
-        mock_session.execute.return_value = mock_execute
-        mock_execute.tuples.return_value = mock_tuples
-        mock_tuples.all.return_value = [("u1", "u1@example.com")]
-
-        result = handler._query_workspace_member_emails(tenant_id="t1", user_ids=None)
-        assert result == {"u1": "u1@example.com"}
-
-        # user_ids with values
-        result = handler._query_workspace_member_emails(tenant_id="t1", user_ids=["u1"])
-        assert result == {"u1": "u1@example.com"}
-
-=======
->>>>>>> 794a50b4ef80ef163ede1fd7757eb4985f9cd84b:api/tests/test_containers_integration_tests/services/test_human_input_delivery_test_service.py
     def test_build_substitutions(self):
         context = DeliveryTestContext(
             tenant_id="t1",

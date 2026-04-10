@@ -5,11 +5,7 @@ import logging
 import threading
 import uuid
 from collections.abc import Generator, Mapping, Sequence
-<<<<<<< HEAD
-from typing import TYPE_CHECKING, Any, Literal, Union, overload
-=======
 from typing import TYPE_CHECKING, Any, Literal, overload
->>>>>>> 794a50b4ef80ef163ede1fd7757eb4985f9cd84b
 
 from flask import Flask, current_app
 from pydantic import ValidationError
@@ -657,11 +653,7 @@ class AdvancedChatAppGenerator(MessageBasedAppGenerator):
         queue_manager: AppQueueManager,
         conversation: ConversationSnapshot,
         message: MessageSnapshot,
-<<<<<<< HEAD
-        user: Union[Account, EndUser],
-=======
         user: Account | EndUser,
->>>>>>> 794a50b4ef80ef163ede1fd7757eb4985f9cd84b
         draft_var_saver_factory: DraftVariableSaverFactory,
         stream: bool = False,
     ) -> ChatbotAppBlockingResponse | Generator[ChatbotAppStreamResponse, None, None]:
