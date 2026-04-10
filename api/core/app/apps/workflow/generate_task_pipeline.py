@@ -252,13 +252,8 @@ class WorkflowAppGenerateTaskPipeline(GraphRuntimeStateSupport):
     @contextmanager
     def _database_session(self):
         """Context manager for database sessions."""
-        with Session(db.engine, expire_on_commit=False) as session:
-            try:
-                yield session
-                session.commit()
-            except Exception:
-                session.rollback()
-                raise
+        with sessionmaker(bind=db.engine, expire_on_commit=False).begin() as session:
+            yield session
 
     def _ensure_workflow_initialized(self):
         """Fluent validation for workflow state."""
