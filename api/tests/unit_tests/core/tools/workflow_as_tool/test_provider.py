@@ -30,11 +30,12 @@ def _controller() -> WorkflowToolProviderController:
     return WorkflowToolProviderController(entity=entity, provider_id="provider-1")
 
 
-def _mock_session_with_begin() -> Mock:
-    session = Mock()
-    begin_cm = Mock()
-    begin_cm.__enter__ = Mock(return_value=None)
-    begin_cm.__exit__ = Mock(return_value=False)
+def _mock_session_with_begin() -> MagicMock:
+    """Return a MagicMock session whose .begin() returns a context-manager."""
+    session = MagicMock()
+    begin_cm = MagicMock()
+    begin_cm.__enter__.return_value = None
+    begin_cm.__exit__.return_value = False
     session.begin.return_value = begin_cm
     return session
 
@@ -159,6 +160,14 @@ def test_get_tools_returns_empty_when_provider_missing():
     controller = _controller()
     controller.tools = None  # type: ignore[assignment]
 
+    session = _mock_session_with_begin()
+    session.query.return_value.where.return_value.first.return_value = None
+    begin_cm = MagicMock()
+    begin_cm.__enter__.return_value = session
+    begin_cm.__exit__.return_value = False
+    mock_factory = Mock()
+    mock_factory.begin.return_value = begin_cm
+
     with patch("core.tools.workflow_as_tool.provider.db") as mock_db:
         mock_db.engine = object()
         with patch("core.tools.workflow_as_tool.provider.Session") as session_cls:
@@ -184,6 +193,15 @@ def test_get_tools_raises_when_app_missing():
         tenant_id="tenant-1",
         parameter_configurations=[],
     )
+
+    session = _mock_session_with_begin()
+    session.query.return_value.where.return_value.first.return_value = db_provider
+    session.get.return_value = None
+    begin_cm = MagicMock()
+    begin_cm.__enter__.return_value = session
+    begin_cm.__exit__.return_value = False
+    mock_factory = Mock()
+    mock_factory.begin.return_value = begin_cm
 
     with patch("core.tools.workflow_as_tool.provider.db") as mock_db:
         mock_db.engine = object()

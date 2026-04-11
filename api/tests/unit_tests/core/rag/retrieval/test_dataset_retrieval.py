@@ -4905,12 +4905,14 @@ class TestInternalHooksCoverage:
         query = Mock()
         query.where.return_value = query
         session.query.return_value = query
-        session_ctx = MagicMock()
-        session_ctx.__enter__.return_value = session
-        session_ctx.__exit__.return_value = False
+        begin_cm = MagicMock()
+        begin_cm.__enter__.return_value = session
+        begin_cm.__exit__.return_value = False
+        mock_factory = Mock()
+        mock_factory.begin.return_value = begin_cm
 
         sessionmaker_ctx = MagicMock()
-        sessionmaker_ctx.begin.return_value = session_ctx
+        sessionmaker_ctx.begin.return_value = begin_cm
 
         with (
             patch("core.rag.retrieval.dataset_retrieval.db", SimpleNamespace(engine=Mock())),

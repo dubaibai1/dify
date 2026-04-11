@@ -19,7 +19,7 @@ from graphon.model_runtime.model_providers.model_provider_factory import ModelPr
 from graphon.model_runtime.runtime import ModelRuntime
 from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, model_validator
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
 from constants import HIDDEN_VALUE
 from core.entities import PluginCredentialType
@@ -246,7 +246,7 @@ class ProviderConfiguration(BaseModel):
             else []
         )
 
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             # Prefer the actual provider record name if exists (to handle aliased provider names)
             provider_record = self._get_provider_record(session)
             provider_name = provider_record.provider_name if provider_record else self.provider.provider
@@ -376,7 +376,7 @@ class ProviderConfiguration(BaseModel):
         if session:
             return _validate(session)
         else:
-            with Session(db.engine) as new_session:
+            with sessionmaker(db.engine).begin() as new_session:
                 return _validate(new_session)
 
     def _generate_provider_credential_name(self, session) -> str:
@@ -454,7 +454,7 @@ class ProviderConfiguration(BaseModel):
         :param credential_name: credential name
         :return:
         """
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             if credential_name:
                 if self._check_provider_credential_name_exists(credential_name=credential_name, session=session):
                     raise ValueError(f"Credential with name '{credential_name}' already exists.")
@@ -508,7 +508,6 @@ class ProviderConfiguration(BaseModel):
 
                         self.switch_preferred_provider_type(provider_type=ProviderType.CUSTOM, session=session)
 
-                session.commit()
             except Exception:
                 session.rollback()
                 raise
@@ -527,7 +526,7 @@ class ProviderConfiguration(BaseModel):
         :param credential_name: credential name
         :return:
         """
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             if credential_name and self._check_provider_credential_name_exists(
                 credential_name=credential_name, session=session, exclude_id=credential_id
             ):
@@ -553,7 +552,6 @@ class ProviderConfiguration(BaseModel):
                 credential_record.updated_at = naive_utc_now()
                 if credential_name:
                     credential_record.credential_name = credential_name
-                session.commit()
 
                 if provider_record and provider_record.credential_id == credential_id:
                     provider_model_credentials_cache = ProviderCredentialsCache(
@@ -617,8 +615,6 @@ class ProviderConfiguration(BaseModel):
             )
             lb_credentials_cache.delete()
 
-        session.commit()
-
     def delete_provider_credential(self, credential_id: str):
         """
         Delete a saved provider credential (by credential_id).
@@ -626,7 +622,7 @@ class ProviderConfiguration(BaseModel):
         :param credential_id: credential id
         :return:
         """
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             stmt = select(ProviderCredential).where(
                 ProviderCredential.id == credential_id,
                 ProviderCredential.tenant_id == self.tenant_id,
@@ -691,7 +687,6 @@ class ProviderConfiguration(BaseModel):
                     provider_model_credentials_cache.delete()
                     self.switch_preferred_provider_type(provider_type=ProviderType.SYSTEM, session=session)
 
-                session.commit()
             except Exception:
                 session.rollback()
                 raise
@@ -703,7 +698,7 @@ class ProviderConfiguration(BaseModel):
         :param credential_id: credential id
         :return:
         """
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             stmt = select(ProviderCredential).where(
                 ProviderCredential.id == credential_id,
                 ProviderCredential.tenant_id == self.tenant_id,
@@ -720,7 +715,6 @@ class ProviderConfiguration(BaseModel):
             try:
                 provider_record.credential_id = credential_record.id
                 provider_record.updated_at = naive_utc_now()
-                session.commit()
 
                 provider_model_credentials_cache = ProviderCredentialsCache(
                     tenant_id=self.tenant_id,
@@ -772,7 +766,7 @@ class ProviderConfiguration(BaseModel):
             else []
         )
 
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             stmt = select(ProviderModelCredential).where(
                 ProviderModelCredential.id == credential_id,
                 ProviderModelCredential.tenant_id == self.tenant_id,
@@ -935,7 +929,7 @@ class ProviderConfiguration(BaseModel):
         if session:
             return _validate(session)
         else:
-            with Session(db.engine) as new_session:
+            with sessionmaker(db.engine).begin() as new_session:
                 return _validate(new_session)
 
     def create_custom_model_credential(
@@ -949,7 +943,7 @@ class ProviderConfiguration(BaseModel):
         :param credentials: model credentials dict
         :return:
         """
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             if credential_name:
                 if self._check_custom_model_credential_name_exists(
                     model=model, model_type=model_type, credential_name=credential_name, session=session
@@ -989,8 +983,6 @@ class ProviderConfiguration(BaseModel):
                     )
                     session.add(provider_model_record)
 
-                session.commit()
-
                 provider_model_credentials_cache = ProviderCredentialsCache(
                     tenant_id=self.tenant_id,
                     identity_id=provider_model_record.id,
@@ -1014,7 +1006,7 @@ class ProviderConfiguration(BaseModel):
         :param credential_id: credential id
         :return:
         """
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             if credential_name and self._check_custom_model_credential_name_exists(
                 model=model,
                 model_type=model_type,
@@ -1050,7 +1042,6 @@ class ProviderConfiguration(BaseModel):
                 credential_record.updated_at = naive_utc_now()
                 if credential_name:
                     credential_record.credential_name = credential_name
-                session.commit()
 
                 if provider_model_record and provider_model_record.credential_id == credential_id:
                     provider_model_credentials_cache = ProviderCredentialsCache(
@@ -1077,7 +1068,7 @@ class ProviderConfiguration(BaseModel):
         :param credential_id: credential id
         :return:
         """
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             stmt = select(ProviderModelCredential).where(
                 ProviderModelCredential.id == credential_id,
                 ProviderModelCredential.tenant_id == self.tenant_id,
@@ -1134,8 +1125,6 @@ class ProviderConfiguration(BaseModel):
                     )
                     provider_model_credentials_cache.delete()
 
-                session.commit()
-
             except Exception:
                 session.rollback()
                 raise
@@ -1150,7 +1139,7 @@ class ProviderConfiguration(BaseModel):
         :param credential_id: credential id
         :return:
         """
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             stmt = select(ProviderModelCredential).where(
                 ProviderModelCredential.id == credential_id,
                 ProviderModelCredential.tenant_id == self.tenant_id,
@@ -1190,7 +1179,6 @@ class ProviderConfiguration(BaseModel):
                 provider_model_credentials_cache.delete()
 
             session.add(provider_model_record)
-            session.commit()
 
     def switch_custom_model_credential(self, model_type: ModelType, model: str, credential_id: str):
         """
@@ -1201,7 +1189,7 @@ class ProviderConfiguration(BaseModel):
         :param credential_id: credential id
         :return:
         """
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             stmt = select(ProviderModelCredential).where(
                 ProviderModelCredential.id == credential_id,
                 ProviderModelCredential.tenant_id == self.tenant_id,
@@ -1220,7 +1208,6 @@ class ProviderConfiguration(BaseModel):
             provider_model_record.credential_id = credential_record.id
             provider_model_record.updated_at = naive_utc_now()
             session.add(provider_model_record)
-            session.commit()
 
             # clear cache
             provider_model_credentials_cache = ProviderCredentialsCache(
@@ -1237,14 +1224,13 @@ class ProviderConfiguration(BaseModel):
         :param model: model name
         :return:
         """
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             # get provider model
             provider_model_record = self._get_custom_model_record(model_type=model_type, model=model, session=session)
 
             # delete provider model
             if provider_model_record:
                 session.delete(provider_model_record)
-                session.commit()
 
                 provider_model_credentials_cache = ProviderCredentialsCache(
                     tenant_id=self.tenant_id,
@@ -1275,7 +1261,7 @@ class ProviderConfiguration(BaseModel):
         :param model: model name
         :return:
         """
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             model_setting = self._get_provider_model_setting(model_type=model_type, model=model, session=session)
 
             if model_setting:
@@ -1291,7 +1277,6 @@ class ProviderConfiguration(BaseModel):
                     enabled=True,
                 )
                 session.add(model_setting)
-            session.commit()
 
         return model_setting
 
@@ -1302,7 +1287,7 @@ class ProviderConfiguration(BaseModel):
         :param model: model name
         :return:
         """
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             model_setting = self._get_provider_model_setting(model_type=model_type, model=model, session=session)
 
             if model_setting:
@@ -1317,7 +1302,6 @@ class ProviderConfiguration(BaseModel):
                     enabled=False,
                 )
                 session.add(model_setting)
-            session.commit()
 
         return model_setting
 
@@ -1328,7 +1312,7 @@ class ProviderConfiguration(BaseModel):
         :param model: model name
         :return:
         """
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             return self._get_provider_model_setting(model_type=model_type, model=model, session=session)
 
     def enable_model_load_balancing(self, model_type: ModelType, model: str) -> ProviderModelSetting:
@@ -1344,7 +1328,7 @@ class ProviderConfiguration(BaseModel):
         if model_provider_id.is_langgenius():
             provider_names.append(model_provider_id.provider_name)
 
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             stmt = select(func.count(LoadBalancingModelConfig.id)).where(
                 LoadBalancingModelConfig.tenant_id == self.tenant_id,
                 LoadBalancingModelConfig.provider_name.in_(provider_names),
@@ -1369,7 +1353,6 @@ class ProviderConfiguration(BaseModel):
                     load_balancing_enabled=True,
                 )
                 session.add(model_setting)
-            session.commit()
 
         return model_setting
 
@@ -1381,7 +1364,7 @@ class ProviderConfiguration(BaseModel):
         :return:
         """
 
-        with Session(db.engine) as session:
+        with sessionmaker(db.engine).begin() as session:
             model_setting = self._get_provider_model_setting(model_type=model_type, model=model, session=session)
 
             if model_setting:
@@ -1396,7 +1379,6 @@ class ProviderConfiguration(BaseModel):
                     load_balancing_enabled=False,
                 )
                 session.add(model_setting)
-            session.commit()
 
         return model_setting
 
@@ -1449,12 +1431,12 @@ class ProviderConfiguration(BaseModel):
                     preferred_provider_type=provider_type,
                 )
                 s.add(preferred_model_provider)
-            s.commit()
+            s.flush()
 
         if session:
             return _switch(session)
         else:
-            with Session(db.engine) as session:
+            with sessionmaker(db.engine).begin() as session:
                 return _switch(session)
 
     def extract_secret_variables(self, credential_form_schemas: list[CredentialFormSchema]) -> list[str]:

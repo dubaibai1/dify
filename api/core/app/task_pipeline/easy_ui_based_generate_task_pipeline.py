@@ -458,7 +458,7 @@ class EasyUIBasedGenerateTaskPipeline(BasedGenerateTaskPipeline):
 
         # Fetch files associated with this message
         files = None
-        with Session(db.engine, expire_on_commit=False) as session:
+        with sessionmaker(db.engine, expire_on_commit=False).begin() as session:
             message_files = session.scalars(select(MessageFile).where(MessageFile.message_id == self._message_id)).all()
 
             if message_files:
@@ -506,7 +506,7 @@ class EasyUIBasedGenerateTaskPipeline(BasedGenerateTaskPipeline):
         :param event: agent thought event
         :return:
         """
-        with Session(db.engine, expire_on_commit=False) as session:
+        with sessionmaker(db.engine, expire_on_commit=False).begin() as session:
             agent_thought: MessageAgentThought | None = session.scalar(
                 select(MessageAgentThought).where(MessageAgentThought.id == event.agent_thought_id).limit(1)
             )

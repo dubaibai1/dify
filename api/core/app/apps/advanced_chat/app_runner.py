@@ -106,7 +106,7 @@ class AdvancedChatAppRunner(WorkflowBasedAppRunner):
             workflow_execution_id=self.application_generate_entity.workflow_run_id,
         )
 
-        with Session(db.engine, expire_on_commit=False) as session:
+        with sessionmaker(db.engine, expire_on_commit=False).begin() as session:
             app_record = session.scalar(select(App).where(App.id == app_config.app_id))
 
         if not app_record:
