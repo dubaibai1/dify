@@ -21,6 +21,7 @@ from graphon.file import File
 from graphon.file.constants import maybe_file_object
 from graphon.variables import utils as variable_utils
 from graphon.variables.variables import FloatVariable, IntegerVariable, RAGPipelineVariable, StringVariable
+from pydantic import TypeAdapter
 from sqlalchemy import (
     DateTime,
     Index,
@@ -68,6 +69,8 @@ from .types import EnumText, LongText, StringUUID
 from .utils.file_input_compat import build_file_from_stored_mapping
 
 logger = logging.getLogger(__name__)
+
+_dict_adapter: TypeAdapter[dict[str, Any]] = TypeAdapter(dict[str, Any])
 
 SerializedWorkflowValue = dict[str, Any]
 SerializedWorkflowVariables = dict[str, SerializedWorkflowValue]
@@ -268,7 +271,7 @@ class Workflow(Base):  # bug
         # Currently, the following functions / methods would mutate the returned dict:
         #
         # - `_get_graph_and_variable_pool_for_single_node_run`.
-        return json.loads(self.graph) if self.graph else {}
+        return _dict_adapter.validate_json(self.graph) if self.graph else {}
 
     def get_node_config_by_id(self, node_id: str) -> NodeConfigDict:
         """Extract a node configuration from the workflow graph by node ID.
@@ -363,7 +366,7 @@ class Workflow(Base):  # bug
 
     @property
     def features_dict(self) -> dict[str, Any]:
-        return json.loads(self.features) if self.features else {}
+        return _dict_adapter.validate_json(self.features) if self.features else {}
 
     @property
     def serialized_features(self) -> str:
@@ -766,15 +769,15 @@ class WorkflowRun(Base):
 
     @property
     def graph_dict(self) -> Mapping[str, Any]:
-        return json.loads(self.graph) if self.graph else {}
+        return _dict_adapter.validate_json(self.graph) if self.graph else {}
 
     @property
     def inputs_dict(self) -> Mapping[str, Any]:
-        return json.loads(self.inputs) if self.inputs else {}
+        return _dict_adapter.validate_json(self.inputs) if self.inputs else {}
 
     @property
     def outputs_dict(self) -> Mapping[str, Any]:
-        return json.loads(self.outputs) if self.outputs else {}
+        return _dict_adapter.validate_json(self.outputs) if self.outputs else {}
 
     @property
     @deprecated("This method is retained for historical reasons; avoid using it if possible.")
@@ -1003,22 +1006,22 @@ class WorkflowNodeExecutionModel(Base):  # This model is expected to have `offlo
 
     @property
     def inputs_dict(self):
-        return json.loads(self.inputs) if self.inputs else None
+        return _dict_adapter.validate_json(self.inputs) if self.inputs else None
 
     @property
     def outputs_dict(self) -> dict[str, Any] | None:
-        return json.loads(self.outputs) if self.outputs else None
+        return _dict_adapter.validate_json(self.outputs) if self.outputs else None
 
     @property
     def process_data_dict(self):
-        return json.loads(self.process_data) if self.process_data else None
+        return _dict_adapter.validate_json(self.process_data) if self.process_data else None
 
     @property
     def execution_metadata_dict(self) -> dict[str, Any]:
         # When the metadata is unset, we return an empty dictionary instead of `None`.
         # This approach streamlines the logic for the caller, making it easier to handle
         # cases where metadata is absent.
-        return json.loads(self.execution_metadata) if self.execution_metadata else {}
+        return _dict_adapter.validate_json(self.execution_metadata) if self.execution_metadata else {}
 
     @property
     def extras(self) -> dict[str, Any]:
