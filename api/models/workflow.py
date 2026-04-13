@@ -52,7 +52,6 @@ from ._workflow_exc import NodeNotFoundError, WorkflowDataError
 if TYPE_CHECKING:
     from .model import AppMode, UploadFile
 
-
 from graphon.variables import SecretVariable, Segment, SegmentType, VariableBase
 
 from constants import DEFAULT_FILE_NUMBER_LIMITS, HIDDEN_VALUE
