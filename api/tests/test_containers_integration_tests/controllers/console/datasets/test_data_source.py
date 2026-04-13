@@ -185,6 +185,38 @@ class TestDataSourceApi:
             with pytest.raises(ValueError):
                 method(api, "b1", "disable")
 
+    def test_patch_binding_scoped_to_current_tenant(self, app, patch_tenant, mock_engine):
+        """Verify that the patch query includes tenant_id to prevent IDOR attacks."""
+
+        api = DataSourceApi()
+        method = unwrap(api.patch)
+
+        binding = MagicMock(id="b1", disabled=True)
+
+        with (
+            app.test_request_context("/"),
+            patch("controllers.console.datasets.data_source.sessionmaker") as mock_session_class,
+            patch("controllers.console.datasets.data_source.db.session.add"),
+            patch("controllers.console.datasets.data_source.db.session.commit"),
+        ):
+            mock_session = MagicMock()
+            mock_session_class.return_value.begin.return_value.__enter__.return_value = mock_session
+            mock_session.execute.return_value.scalar_one_or_none.return_value = binding
+
+            method(api, "b1", "enable")
+
+            # Inspect the SELECT statement passed to session.execute
+            call_args = mock_session.execute.call_args
+            stmt = call_args[0][0]
+
+            # Structurally verify tenant_id filtering instead of brittle SQL string matching
+            where_clause = stmt.whereclause
+            assert where_clause is not None, "The query must have a WHERE clause"
+
+            # Check that tenant_id appears in the WHERE predicates
+            where_str = str(where_clause.compile(compile_kwargs={"literal_binds": True}))
+            assert "tenant_id" in where_str, "The patch query must filter by tenant_id to prevent IDOR vulnerabilities"
+
 
 class TestDataSourceNotionListApi:
     @pytest.fixture
