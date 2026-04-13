@@ -12,6 +12,7 @@ from graphon.nodes.base.variable_template_parser import VariableTemplateParser
 from core.app.entities.app_invoke_entities import DIFY_RUN_CONTEXT_KEY, DifyRunContext
 from core.workflow.system_variables import SystemVariableKey, get_system_text
 
+from .clarification_helper import should_enable_clarification
 from .entities import AgentNodeData
 from .exceptions import (
     AgentInvocationError,
@@ -156,6 +157,11 @@ class AgentNode(Node[AgentNodeData]):
                 node_id=self._node_id,
                 node_execution_id=self.id,
             )
+            # Extensibility hook for human clarification (HITL support)
+            # Currently a no-op, but allows future HITL implementation
+            if should_enable_clarification(self.node_data):
+                # Placeholder for future clarification logic
+                pass
         except PluginDaemonClientSideError as e:
             transform_error = AgentMessageTransformError(
                 f"Failed to transform agent message: {str(e)}", original_error=e
