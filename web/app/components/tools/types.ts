@@ -6,11 +6,32 @@ type LocalizedText<T = string> = {
   [key: string]: T
 }
 
+type OutputSchemaProperty = {
+  type?: string
+  description?: string
+  items?: {
+    type?: string
+    properties?: Record<string, OutputSchemaProperty>
+  }
+  properties?: Record<string, OutputSchemaProperty>
+}
+
+type OutputSchema = {
+  properties?: Record<string, OutputSchemaProperty>
+  [key: string]: unknown
+}
+
+export enum LOC {
+  tools = 'tools',
+  app = 'app',
+}
+
 export enum AuthType {
   none = 'none',
   apiKey = 'api_key', // backward compatibility
   apiKeyHeader = 'api_key_header',
   apiKeyQuery = 'api_key_query',
+  basicAuth = 'basic_auth',
 }
 
 export enum AuthHeaderPrefix {
@@ -25,6 +46,8 @@ export type Credential = {
   api_key_value?: string
   api_key_header_prefix?: AuthHeaderPrefix
   api_key_query_param?: string
+  basic_username?: string
+  basic_password?: string
 }
 
 export enum CollectionType {
@@ -52,7 +75,7 @@ export type Collection = {
   icon_dark?: string | Emoji
   label: LocalizedText
   type: CollectionType | string
-  team_credentials: Record<string, any>
+  team_credentials: Record<string, unknown>
   is_team_authorization: boolean
   allow_delete: boolean
   labels: string[]
@@ -124,17 +147,17 @@ export type Event = {
   description: LocalizedText
   parameters: TriggerParameter[]
   labels: string[]
-  output_schema: Record<string, any>
+  output_schema: OutputSchema
 }
 
 export type Tool = {
   name: string
   author: string
   label: LocalizedText
-  description: any
+  description: LocalizedText
   parameters: ToolParameter[]
   labels: string[]
-  output_schema: Record<string, any>
+  output_schema: OutputSchema
 }
 
 export type ToolCredential = {
@@ -158,22 +181,22 @@ export type CustomCollectionBackend = {
   icon: Emoji
   schema_type: string
   schema: string
-  privacy_policy: string
-  custom_disclaimer: string
-  tools?: ParamItem[]
-  id: string
-  labels: string[]
+  privacy_policy?: string
+  custom_disclaimer?: string
+  tools?: CustomParamSchema[]
+  id?: string
+  labels?: string[]
 }
 
 export type ParamItem = {
   name: string
   label: LocalizedText
-  human_description: LocalizedText
-  llm_description: string
-  type: string
-  form: string
-  required: boolean
-  default: string
+  human_description?: LocalizedText
+  llm_description?: string
+  type?: string
+  form?: string
+  required?: boolean
+  default?: string
   min?: number
   max?: number
   options?: {

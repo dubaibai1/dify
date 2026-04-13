@@ -32,7 +32,7 @@ const SelectItem: FC<ItemProps> = ({ text, value, isChecked, onClick }) => {
       onClick={() => onClick(value)}
     >
       <Radio isChecked={isChecked} />
-      <div className="system-sm-regular text-text-primary">{text}</div>
+      <div className="text-text-primary system-sm-regular">{text}</div>
     </div>
   )
 }
@@ -62,7 +62,7 @@ const ConfigCredential: FC<Props> = ({
         <div className="px-6 pt-2">
           <div className="space-y-4">
             <div>
-              <div className="system-sm-medium py-2 text-text-primary">{t('createTool.authMethod.type', { ns: 'tools' })}</div>
+              <div className="py-2 text-text-primary system-sm-medium">{t('createTool.authMethod.type', { ns: 'tools' })}</div>
               <div className="flex space-x-3">
                 <SelectItem
                   text={t('createTool.authMethod.types.none', { ns: 'tools' })}
@@ -93,12 +93,22 @@ const ConfigCredential: FC<Props> = ({
                     api_key_value: tempCredential.api_key_value || '',
                   })}
                 />
+                <SelectItem
+                  text={t('createTool.authMethod.types.basic_auth', { ns: 'tools' })}
+                  value={AuthType.basicAuth}
+                  isChecked={tempCredential.auth_type === AuthType.basicAuth}
+                  onClick={value => setTempCredential({
+                    auth_type: value as AuthType,
+                    basic_username: tempCredential.basic_username || '',
+                    basic_password: tempCredential.basic_password || '',
+                  })}
+                />
               </div>
             </div>
             {tempCredential.auth_type === AuthType.apiKeyHeader && (
               <>
                 <div>
-                  <div className="system-sm-medium py-2 text-text-primary">{t('createTool.authHeaderPrefix.title', { ns: 'tools' })}</div>
+                  <div className="py-2 text-text-primary system-sm-medium">{t('createTool.authHeaderPrefix.title', { ns: 'tools' })}</div>
                   <div className="flex space-x-3">
                     <SelectItem
                       text={t('createTool.authHeaderPrefix.types.basic', { ns: 'tools' })}
@@ -121,7 +131,7 @@ const ConfigCredential: FC<Props> = ({
                   </div>
                 </div>
                 <div>
-                  <div className="system-sm-medium flex items-center py-2 text-text-primary">
+                  <div className="flex items-center py-2 text-text-primary system-sm-medium">
                     {t('createTool.authMethod.key', { ns: 'tools' })}
                     <Tooltip
                       popupContent={(
@@ -139,7 +149,7 @@ const ConfigCredential: FC<Props> = ({
                   />
                 </div>
                 <div>
-                  <div className="system-sm-medium py-2 text-text-primary">{t('createTool.authMethod.value', { ns: 'tools' })}</div>
+                  <div className="py-2 text-text-primary system-sm-medium">{t('createTool.authMethod.value', { ns: 'tools' })}</div>
                   <Input
                     value={tempCredential.api_key_value}
                     onChange={e => setTempCredential({ ...tempCredential, api_key_value: e.target.value })}
@@ -151,7 +161,7 @@ const ConfigCredential: FC<Props> = ({
             {tempCredential.auth_type === AuthType.apiKeyQuery && (
               <>
                 <div>
-                  <div className="system-sm-medium flex items-center py-2 text-text-primary">
+                  <div className="flex items-center py-2 text-text-primary system-sm-medium">
                     {t('createTool.authMethod.queryParam', { ns: 'tools' })}
                     <Tooltip
                       popupContent={(
@@ -169,11 +179,32 @@ const ConfigCredential: FC<Props> = ({
                   />
                 </div>
                 <div>
-                  <div className="system-sm-medium py-2 text-text-primary">{t('createTool.authMethod.value', { ns: 'tools' })}</div>
+                  <div className="py-2 text-text-primary system-sm-medium">{t('createTool.authMethod.value', { ns: 'tools' })}</div>
                   <Input
                     value={tempCredential.api_key_value}
                     onChange={e => setTempCredential({ ...tempCredential, api_key_value: e.target.value })}
                     placeholder={t('createTool.authMethod.types.apiValuePlaceholder', { ns: 'tools' })!}
+                  />
+                </div>
+              </>
+            )}
+            {tempCredential.auth_type === AuthType.basicAuth && (
+              <>
+                <div>
+                  <div className="py-2 text-text-primary system-sm-medium">{t('createTool.authMethod.basic.username', { ns: 'tools' })}</div>
+                  <Input
+                    value={tempCredential.basic_username ?? ''}
+                    onChange={e => setTempCredential({ ...tempCredential, basic_username: e.target.value })}
+                    placeholder={t('createTool.authMethod.basic.usernamePlaceholder', { ns: 'tools' })!}
+                  />
+                </div>
+                <div>
+                  <div className="py-2 text-text-primary system-sm-medium">{t('createTool.authMethod.basic.password', { ns: 'tools' })}</div>
+                  <Input
+                    value={tempCredential.basic_password ?? ''}
+                    onChange={e => setTempCredential({ ...tempCredential, basic_password: e.target.value })}
+                    placeholder={t('createTool.authMethod.basic.passwordPlaceholder', { ns: 'tools' })!}
+                    type="password"
                   />
                 </div>
               </>
