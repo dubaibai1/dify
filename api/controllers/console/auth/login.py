@@ -28,7 +28,6 @@ from controllers.console.wraps import (
     email_password_login_enabled,
     setup_required,
 )
-from events.tenant_event import tenant_was_created
 from libs.helper import EmailStr, extract_remote_ip
 from libs.login import current_account_with_tenant
 from libs.token import (
@@ -40,6 +39,7 @@ from libs.token import (
     set_csrf_token_to_cookie,
     set_refresh_token_to_cookie,
 )
+from message_events.tenant_event import tenant_was_created
 from services.account_service import AccountService, InvitationDetailDict, RegisterService, TenantService
 from services.billing_service import BillingService
 from services.entities.auth_entities import LoginPayloadBase

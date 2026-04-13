@@ -11,10 +11,10 @@ from sqlalchemy.orm import Session
 from configs import dify_config
 from core.app.entities.app_invoke_entities import AgentChatAppGenerateEntity, ChatAppGenerateEntity
 from core.entities.provider_entities import ProviderQuotaType, QuotaUnit, SystemConfiguration
-from events.message_event import message_was_created
 from extensions.ext_database import db
 from extensions.ext_redis import redis_client, redis_fallback
 from libs import datetime_utils
+from message_events.message_event import message_was_created
 from models.model import Message
 from models.provider import Provider, ProviderType
 from models.provider_ids import ModelProviderID

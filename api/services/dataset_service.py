@@ -27,13 +27,13 @@ from core.rag.index_processor.constant.built_in_field import BuiltInField
 from core.rag.index_processor.constant.index_type import IndexStructureType, IndexTechniqueType
 from core.rag.retrieval.retrieval_methods import RetrievalMethod
 from enums.cloud_plan import CloudPlan
-from events.dataset_event import dataset_was_deleted
-from events.document_event import document_was_deleted
 from extensions.ext_database import db
 from extensions.ext_redis import redis_client
 from libs import helper
 from libs.datetime_utils import naive_utc_now
 from libs.login import current_user
+from message_events.dataset_event import dataset_was_deleted
+from message_events.document_event import document_was_deleted
 from models import Account, TenantAccountRole
 from models.dataset import (
     AppDatasetJoin,

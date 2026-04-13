@@ -4,8 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 
 from core.trigger.constants import TRIGGER_NODE_TYPES
-from events.app_event import app_published_workflow_was_updated
 from extensions.ext_database import db
+from message_events.app_event import app_published_workflow_was_updated
 from models import AppMode
 from models.enums import AppTriggerStatus
 from models.trigger import AppTrigger
