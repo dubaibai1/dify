@@ -30,6 +30,7 @@ from .test_mock_nodes import (
 
 if TYPE_CHECKING:
     from graphon.entities import GraphInitParams
+
     from graphon.runtime import GraphRuntimeState
 
     from .test_mock_config import MockConfig

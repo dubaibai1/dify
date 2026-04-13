@@ -64,7 +64,6 @@ from graphon.nodes.llm.node import (
 )
 from graphon.nodes.llm.protocols import CredentialsProvider, ModelFactory
 from graphon.nodes.llm.runtime_protocols import PromptMessageSerializerProtocol
-from graphon.runtime import GraphRuntimeState, VariablePool
 from graphon.template_rendering import TemplateRenderError
 from graphon.variables import ArrayAnySegment, ArrayFileSegment, NoneSegment
 
@@ -80,6 +79,7 @@ from core.entities.provider_entities import CustomConfiguration, SystemConfigura
 from core.plugin.impl.model_runtime_factory import create_plugin_model_runtime
 from core.prompt.entities.advanced_prompt_entities import MemoryConfig
 from core.workflow.system_variables import default_system_variables
+from graphon.runtime import GraphRuntimeState, VariablePool
 from models.provider import ProviderType
 from tests.workflow_test_utils import build_test_graph_init_params
 

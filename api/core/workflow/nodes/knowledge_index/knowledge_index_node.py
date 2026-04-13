@@ -21,6 +21,7 @@ from .exc import (
 
 if TYPE_CHECKING:
     from graphon.entities import GraphInitParams
+
     from graphon.runtime import GraphRuntimeState
 
 logger = logging.getLogger(__name__)

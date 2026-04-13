@@ -6,7 +6,7 @@ import secrets
 import time
 import uuid
 from collections import Counter
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from typing import Any, Literal, TypedDict, cast
 
 import sqlalchemy as sa
@@ -34,7 +34,7 @@ from extensions.ext_redis import redis_client
 from libs import helper
 from libs.datetime_utils import naive_utc_now
 from libs.login import current_user
-from models import Account, TenantAccountRole
+from models import Account, TenantAccountJoin, TenantAccountRole
 from models.dataset import (
     AppDatasetJoin,
     ChildChunk,
@@ -206,7 +206,8 @@ class DatasetService:
         else:
             mode = str(DocumentService.DEFAULT_RULES["mode"])
             rules = dict(DocumentService.DEFAULT_RULES.get("rules") or {})
-        return {"mode": mode, "rules": rules}
+        result: ProcessRulesDict = {"mode": mode, "rules": rules}
+        return result
 
     @staticmethod
     def get_datasets_by_ids(ids, tenant_id):
@@ -1216,10 +1217,11 @@ class DatasetService:
         assert current_user.current_tenant_id is not None
         features = FeatureService.get_features(current_user.current_tenant_id)
         if not features.billing.enabled or features.billing.subscription.plan == CloudPlan.SANDBOX:
-            return {
+            empty_logs: AutoDisableLogsDict = {
                 "document_ids": [],
                 "count": 0,
             }
+            return empty_logs
         # get recent 30 days auto disable logs
         start_date = datetime.datetime.now() - datetime.timedelta(days=30)
         dataset_auto_disable_logs = db.session.scalars(
@@ -1229,14 +1231,16 @@ class DatasetService:
             )
         ).all()
         if dataset_auto_disable_logs:
-            return {
+            non_empty_logs: AutoDisableLogsDict = {
                 "document_ids": [log.document_id for log in dataset_auto_disable_logs],
                 "count": len(dataset_auto_disable_logs),
             }
-        return {
+            return non_empty_logs
+        no_logs: AutoDisableLogsDict = {
             "document_ids": [],
             "count": 0,
         }
+        return no_logs
 
 
 class DocumentService:
@@ -4030,6 +4034,84 @@ class DatasetCollectionBindingService:
 
 class DatasetPermissionService:
     @classmethod
+    def parse_and_validate_partial_member_ids(cls, tenant_id: str, user_list: list[Any]) -> list[str]:
+        """
+        Normalize partial_member_list payload and ensure each id is a UUID that belongs to the tenant.
+
+        Call this before persisting dataset permission changes so invalid placeholders (e.g. "user_id_1")
+        fail fast with ValueError instead of causing a 500 or leaving partial_members without usable rows.
+        """
+        if not user_list:
+            raise ValueError("partial_member_list must contain at least one workspace member account id.")
+        normalized = cls._normalize_partial_member_list(user_list)
+        canonical_ids: list[str] = []
+        for raw in normalized:
+            try:
+                canonical_ids.append(str(uuid.UUID(raw)))
+            except ValueError as exc:
+                raise ValueError(
+                    f"Invalid account id in partial_member_list: {raw!r}. "
+                    "Each entry must be a workspace member's account UUID (see workspace members API); "
+                    "placeholder strings such as 'user_id_1' are not accepted."
+                ) from exc
+
+        unique_ids = list(dict.fromkeys(canonical_ids))
+        stmt = select(TenantAccountJoin.account_id).where(
+            TenantAccountJoin.tenant_id == tenant_id,
+            TenantAccountJoin.account_id.in_(unique_ids),
+        )
+        found_ids = set(db.session.scalars(stmt).all())
+        missing = [aid for aid in unique_ids if aid not in found_ids]
+        if missing:
+            raise ValueError(
+                "partial_member_list references account ids that are not members of this workspace: "
+                + ", ".join(missing)
+            )
+        return unique_ids
+
+    @classmethod
+    def replace_partial_member_rows(cls, tenant_id: str, dataset_id: str, account_ids: list[str]) -> None:
+        """Replace DatasetPermission rows for a dataset without committing."""
+        db.session.execute(delete(DatasetPermission).where(DatasetPermission.dataset_id == dataset_id))
+        if not account_ids:
+            return
+        permissions = [
+            DatasetPermission(tenant_id=tenant_id, dataset_id=dataset_id, account_id=account_id)
+            for account_id in account_ids
+        ]
+        db.session.add_all(permissions)
+
+    @staticmethod
+    def _normalize_partial_member_list(user_list: list[Any]) -> list[str]:
+        """
+        Normalize partial member list payload.
+
+        Historically, some callers send a list of strings (account IDs), while others send
+        a list of objects like {"user_id": "..."}.
+        """
+        normalized: list[str] = []
+        for item in user_list:
+            if isinstance(item, str):
+                normalized.append(item)
+                continue
+
+            if isinstance(item, Mapping):
+                # Be lenient about the exact key to avoid breaking clients.
+                if "user_id" in item:
+                    normalized.append(str(item["user_id"]))
+                    continue
+                if "account_id" in item:
+                    normalized.append(str(item["account_id"]))
+                    continue
+                if "id" in item:
+                    normalized.append(str(item["id"]))
+                    continue
+
+            raise ValueError("Invalid partial member list item format.")
+
+        return normalized
+
+    @classmethod
     def get_dataset_partial_member_list(cls, dataset_id):
         user_list_query = db.session.scalars(
             select(
@@ -4042,17 +4124,11 @@ class DatasetPermissionService:
     @classmethod
     def update_partial_member_list(cls, tenant_id, dataset_id, user_list):
         try:
-            db.session.execute(delete(DatasetPermission).where(DatasetPermission.dataset_id == dataset_id))
-            permissions = []
-            for user in user_list:
-                permission = DatasetPermission(
-                    tenant_id=tenant_id,
-                    dataset_id=dataset_id,
-                    account_id=user["user_id"],
-                )
-                permissions.append(permission)
-
-            db.session.add_all(permissions)
+            if user_list:
+                account_ids = cls.parse_and_validate_partial_member_ids(tenant_id, user_list)
+            else:
+                account_ids = []
+            cls.replace_partial_member_rows(tenant_id, dataset_id, account_ids)
             db.session.commit()
         except Exception as e:
             db.session.rollback()
@@ -4071,7 +4147,7 @@ class DatasetPermissionService:
                 raise ValueError("Partial member list is required when setting to partial members.")
 
             local_member_list = cls.get_dataset_partial_member_list(dataset.id)
-            request_member_list = [user["user_id"] for user in requested_partial_member_list]
+            request_member_list = cls._normalize_partial_member_list(requested_partial_member_list)
             if set(local_member_list) != set(request_member_list):
                 raise ValueError("Dataset operators cannot change the dataset permissions.")
 

@@ -60,6 +60,7 @@ from models.model import Conversation
 
 if TYPE_CHECKING:
     from graphon.entities import GraphInitParams
+
     from graphon.runtime import GraphRuntimeState
 
 LATEST_VERSION = "latest"

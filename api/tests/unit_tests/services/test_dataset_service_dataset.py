@@ -1703,7 +1703,14 @@ class TestDatasetPermissionService:
         assert result == ["user-1", "user-2"]
 
     def test_update_partial_member_list_replaces_permissions_and_commits(self):
-        with patch("services.dataset_service.db") as mock_db:
+        with (
+            patch("services.dataset_service.db") as mock_db,
+            patch.object(
+                DatasetPermissionService,
+                "parse_and_validate_partial_member_ids",
+                return_value=["user-1", "user-2"],
+            ),
+        ):
             DatasetPermissionService.update_partial_member_list(
                 "tenant-1",
                 "dataset-1",
@@ -1714,8 +1721,34 @@ class TestDatasetPermissionService:
         mock_db.session.add_all.assert_called_once()
         mock_db.session.commit.assert_called_once()
 
+    def test_update_partial_member_list_accepts_scalar_user_ids(self):
+        with (
+            patch("services.dataset_service.db") as mock_db,
+            patch.object(
+                DatasetPermissionService,
+                "parse_and_validate_partial_member_ids",
+                return_value=["user-1", "user-2"],
+            ),
+        ):
+            DatasetPermissionService.update_partial_member_list(
+                "tenant-1",
+                "dataset-1",
+                ["user-1", "user-2"],
+            )
+
+        mock_db.session.execute.assert_called_once()
+        mock_db.session.add_all.assert_called_once()
+        mock_db.session.commit.assert_called_once()
+
     def test_update_partial_member_list_rolls_back_on_exception(self):
-        with patch("services.dataset_service.db") as mock_db:
+        with (
+            patch("services.dataset_service.db") as mock_db,
+            patch.object(
+                DatasetPermissionService,
+                "parse_and_validate_partial_member_ids",
+                return_value=["user-1"],
+            ),
+        ):
             mock_db.session.add_all.side_effect = RuntimeError("boom")
 
             with pytest.raises(RuntimeError, match="boom"):
@@ -1726,6 +1759,26 @@ class TestDatasetPermissionService:
                 )
 
         mock_db.session.rollback.assert_called_once()
+
+    def test_parse_and_validate_partial_member_ids_rejects_placeholder_strings(self):
+        with pytest.raises(ValueError, match="Invalid account id"):
+            DatasetPermissionService.parse_and_validate_partial_member_ids(
+                "tenant-1",
+                ["user_id_1", "user-id-2"],
+            )
+
+    def test_parse_and_validate_partial_member_ids_rejects_unknown_workspace_member(self):
+        tenant_id = "550e8400-e29b-41d4-a716-446655440000"
+        member_id = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+        outsider_id = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        with patch("services.dataset_service.db") as mock_db:
+            mock_db.session.scalars.return_value.all.return_value = [member_id]
+
+            with pytest.raises(ValueError, match="not members of this workspace"):
+                DatasetPermissionService.parse_and_validate_partial_member_ids(
+                    tenant_id,
+                    [member_id, outsider_id],
+                )
 
     def test_check_permission_requires_dataset_editor(self):
         user = SimpleNamespace(is_dataset_editor=False, is_dataset_operator=False)
@@ -1763,6 +1816,21 @@ class TestDatasetPermissionService:
                     [{"user_id": "user-2"}],
                 )
 
+    def test_check_permission_rejects_dataset_operator_member_list_changes_with_scalar_ids(self):
+        user = SimpleNamespace(is_dataset_editor=True, is_dataset_operator=True)
+        dataset = DatasetServiceUnitDataFactory.create_dataset_mock(
+            dataset_id="dataset-1", permission="partial_members"
+        )
+
+        with patch.object(DatasetPermissionService, "get_dataset_partial_member_list", return_value=["user-1"]):
+            with pytest.raises(ValueError, match="cannot change the dataset permissions"):
+                DatasetPermissionService.check_permission(
+                    user,
+                    dataset,
+                    "partial_members",
+                    ["user-2"],
+                )
+
     def test_check_permission_allows_dataset_operator_when_member_list_is_unchanged(self):
         user = SimpleNamespace(is_dataset_editor=True, is_dataset_operator=True)
         dataset = DatasetServiceUnitDataFactory.create_dataset_mock(
@@ -1775,6 +1843,20 @@ class TestDatasetPermissionService:
                 dataset,
                 "partial_members",
                 [{"user_id": "user-1"}],
+            )
+
+    def test_check_permission_allows_dataset_operator_when_member_list_is_unchanged_with_scalar_ids(self):
+        user = SimpleNamespace(is_dataset_editor=True, is_dataset_operator=True)
+        dataset = DatasetServiceUnitDataFactory.create_dataset_mock(
+            dataset_id="dataset-1", permission="partial_members"
+        )
+
+        with patch.object(DatasetPermissionService, "get_dataset_partial_member_list", return_value=["user-1"]):
+            DatasetPermissionService.check_permission(
+                user,
+                dataset,
+                "partial_members",
+                ["user-1"],
             )
 
     def test_clear_partial_member_list_deletes_permissions_and_commits(self):

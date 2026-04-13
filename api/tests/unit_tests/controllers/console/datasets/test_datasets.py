@@ -710,6 +710,10 @@ class TestDatasetApiPatch:
 
         dataset_id = "dataset-id"
 
+        canonical_member_ids = [
+            "00000000-0000-4000-8000-000000000001",
+            "00000000-0000-4000-8000-000000000002",
+        ]
         payload = {
             "permission": "partial_members",
             "partial_member_list": [{"id": "u1"}, {"id": "u2"}],
@@ -760,18 +764,27 @@ class TestDatasetApiPatch:
             ),
             patch.object(
                 DatasetPermissionService,
-                "update_partial_member_list",
+                "parse_and_validate_partial_member_ids",
+                return_value=canonical_member_ids,
+            ),
+            patch.object(
+                DatasetPermissionService,
+                "replace_partial_member_rows",
+                return_value=None,
+            ),
+            patch(
+                "controllers.console.datasets.datasets.db.session.commit",
                 return_value=None,
             ),
             patch.object(
                 DatasetPermissionService,
                 "get_dataset_partial_member_list",
-                return_value=payload["partial_member_list"],
+                return_value=canonical_member_ids,
             ),
         ):
             result, _ = method(api, dataset_id)
 
-        assert result["partial_member_list"] == payload["partial_member_list"]
+        assert result["partial_member_list"] == canonical_member_ids
 
     def test_patch_clear_partial_members(self, app):
         api = DatasetApi()

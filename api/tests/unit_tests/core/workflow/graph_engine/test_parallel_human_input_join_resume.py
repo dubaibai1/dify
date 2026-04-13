@@ -22,7 +22,6 @@ from graphon.nodes.human_input.enums import HumanInputFormStatus
 from graphon.nodes.human_input.human_input_node import HumanInputNode
 from graphon.nodes.start.entities import StartNodeData
 from graphon.nodes.start.start_node import StartNode
-from graphon.runtime import GraphRuntimeState, VariablePool
 
 from core.repositories.human_input_repository import (
     FormCreateParams,
@@ -31,6 +30,7 @@ from core.repositories.human_input_repository import (
 )
 from core.workflow.node_runtime import DifyHumanInputNodeRuntime
 from core.workflow.system_variables import build_system_variables
+from graphon.runtime import GraphRuntimeState, VariablePool
 from libs.datetime_utils import naive_utc_now
 from tests.workflow_test_utils import build_test_graph_init_params
 

@@ -4,7 +4,7 @@ from flask import request
 from flask_restx import marshal
 from graphon.model_runtime.entities.model_entities import ModelType
 from pydantic import BaseModel, Field, TypeAdapter, field_validator
-from werkzeug.exceptions import Forbidden, NotFound
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 
 import services
 from controllers.common.schema import register_schema_models
@@ -17,6 +17,7 @@ from controllers.service_api.wraps import (
 )
 from core.plugin.impl.model_runtime_factory import create_plugin_provider_manager
 from core.rag.index_processor.constant.index_type import IndexTechniqueType
+from extensions.ext_database import db
 from fields.dataset_fields import dataset_detail_fields
 from fields.tag_fields import DataSetTag
 from libs.login import current_user
@@ -65,10 +66,34 @@ class DatasetUpdatePayload(BaseModel):
     embedding_model: str | None = None
     embedding_model_provider: str | None = None
     retrieval_model: RetrievalModel | None = None
-    partial_member_list: list[dict[str, str]] | None = None
+    partial_member_list: list[str] | None = None
     external_retrieval_model: dict[str, Any] | None = None
     external_knowledge_id: str | None = None
     external_knowledge_api_id: str | None = None
+
+    @field_validator("partial_member_list", mode="before")
+    @classmethod
+    def normalize_partial_member_list(cls, value: Any) -> Any:
+        if value is None:
+            return None
+        if not isinstance(value, list):
+            return value
+        normalized: list[str] = []
+        for item in value:
+            if isinstance(item, str):
+                normalized.append(item)
+            elif isinstance(item, dict):
+                if "user_id" in item:
+                    normalized.append(str(item["user_id"]))
+                elif "account_id" in item:
+                    normalized.append(str(item["account_id"]))
+                elif "id" in item:
+                    normalized.append(str(item["id"]))
+                else:
+                    raise ValueError("Invalid partial member list item format.")
+            else:
+                raise ValueError("Invalid partial member list item format.")
+        return normalized
 
 
 class TagNamePayload(BaseModel):
@@ -347,12 +372,27 @@ class DatasetApi(DatasetApiResource):
                 retrieval_model.reranking_model.reranking_model_name,
             )
 
+        validated_partial_member_ids: list[str] | None = None
+        if payload.partial_member_list is not None and payload.permission == DatasetPermissionEnum.PARTIAL_TEAM:
+            assert isinstance(current_user, Account)
+            tenant_id_for_validation = current_user.current_tenant_id
+            assert tenant_id_for_validation is not None
+            try:
+                validated_partial_member_ids = DatasetPermissionService.parse_and_validate_partial_member_ids(
+                    tenant_id_for_validation, payload.partial_member_list
+                )
+            except ValueError as exc:
+                raise BadRequest(str(exc)) from exc
+
+        partial_list_for_check = (
+            validated_partial_member_ids if validated_partial_member_ids is not None else payload.partial_member_list
+        )
         # The role of the current user in the ta table must be admin, owner, editor, or dataset_operator
         DatasetPermissionService.check_permission(
             current_user,
             dataset,
             str(payload.permission) if payload.permission else None,
-            payload.partial_member_list,
+            partial_list_for_check,
         )
 
         dataset = DatasetService.update_dataset(dataset_id_str, update_data, current_user)
@@ -362,10 +402,12 @@ class DatasetApi(DatasetApiResource):
 
         result_data = cast(dict[str, Any], marshal(dataset, dataset_detail_fields))
         assert isinstance(current_user, Account)
-        tenant_id = current_user.current_tenant_id
 
-        if payload.partial_member_list and payload.permission == DatasetPermissionEnum.PARTIAL_TEAM:
-            DatasetPermissionService.update_partial_member_list(tenant_id, dataset_id_str, payload.partial_member_list)
+        if validated_partial_member_ids is not None:
+            DatasetPermissionService.replace_partial_member_rows(
+                dataset.tenant_id, dataset_id_str, validated_partial_member_ids
+            )
+            db.session.commit()
         # clear partial member list when permission is only_me or all_team_members
         elif payload.permission in {DatasetPermissionEnum.ONLY_ME, DatasetPermissionEnum.ALL_TEAM}:
             DatasetPermissionService.clear_partial_member_list(dataset_id_str)

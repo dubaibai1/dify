@@ -30,10 +30,10 @@ from graphon.nodes.llm.exc import (
     NoPromptFoundError,
     TemplateTypeNotSupportError,
 )
-from graphon.runtime import VariablePool
 from graphon.variables import ArrayAnySegment, ArrayFileSegment, NoneSegment
 
 from core.model_manager import ModelInstance
+from graphon.runtime import VariablePool
 
 
 def _build_model_schema(

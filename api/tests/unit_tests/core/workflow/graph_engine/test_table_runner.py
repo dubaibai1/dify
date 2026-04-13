@@ -28,7 +28,6 @@ from graphon.graph_events import (
     GraphRunStartedEvent,
     GraphRunSucceededEvent,
 )
-from graphon.runtime import GraphRuntimeState, VariablePool
 from graphon.variables import (
     ArrayNumberVariable,
     ArrayObjectVariable,
@@ -44,6 +43,7 @@ from core.tools.utils.yaml_utils import _load_yaml_file
 from core.workflow.node_factory import DifyNodeFactory, get_default_root_node_id
 from core.workflow.system_variables import build_bootstrap_variables, build_system_variables
 from core.workflow.variable_pool_initializer import add_node_inputs_to_pool, add_variables_to_pool
+from graphon.runtime import GraphRuntimeState, VariablePool
 
 from .test_mock_config import MockConfig
 from .test_mock_factory import MockNodeFactory

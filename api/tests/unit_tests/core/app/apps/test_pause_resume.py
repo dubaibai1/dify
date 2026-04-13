@@ -24,13 +24,13 @@ from graphon.nodes.base.entities import OutputVariableEntity
 from graphon.nodes.base.node import Node
 from graphon.nodes.end.entities import EndNodeData
 from graphon.nodes.start.entities import StartNodeData
-from graphon.runtime import GraphRuntimeState, VariablePool
 
 from core.app.apps.advanced_chat import app_generator as adv_app_gen_module
 from core.app.apps.workflow import app_generator as wf_app_gen_module
 from core.app.entities.app_invoke_entities import InvokeFrom
 from core.workflow.node_factory import DifyNodeFactory
 from core.workflow.system_variables import build_system_variables
+from graphon.runtime import GraphRuntimeState, VariablePool
 from tests.workflow_test_utils import build_test_graph_init_params
 
 if "core.ops.ops_trace_manager" not in sys.modules:
