@@ -213,7 +213,7 @@
     "eslint": "9.39.2",
     "eslint-plugin-react-hooks": "7.0.1",
     "eslint-plugin-react-refresh": "0.4.26",
-    "eslint-plugin-sonarjs": "3.0.6",
+    "eslint-plugin-sonarjs": "4.0.2",
     "eslint-plugin-storybook": "10.2.1",
     "eslint-plugin-tailwindcss": "3.18.2",
     "husky": "9.1.7",
