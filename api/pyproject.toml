@@ -88,7 +88,7 @@ dependencies = [
     "packaging~=23.2",
     "croniter>=6.0.0",
     "weaviate-client==4.17.0",
-    "apscheduler>=3.11.0",
+    "apscheduler>=3.11.2",
     "weave>=0.52.16",
     "fastopenapi[flask]>=0.7.0",
 ]
