@@ -2642,7 +2642,7 @@
   },
   "app/components/base/icons/src/public/other/index.ts": {
     "no-barrel-files/no-barrel-files": {
-      "count": 5
+      "count": 6
     }
   },
   "app/components/base/icons/src/public/thought/index.ts": {
@@ -7915,11 +7915,6 @@
       "count": 3
     }
   },
-  "app/components/workflow-app/components/workflow-main.tsx": {
-    "ts/no-explicit-any": {
-      "count": 2
-    }
-  },
   "app/components/workflow-app/components/workflow-onboarding-modal/index.tsx": {
     "tailwindcss/enforce-consistent-class-order": {
       "count": 3
@@ -8332,7 +8327,7 @@
   },
   "app/components/workflow/hooks/index.ts": {
     "no-barrel-files/no-barrel-files": {
-      "count": 25
+      "count": 27
     }
   },
   "app/components/workflow/hooks/use-checklist.ts": {
@@ -8354,11 +8349,6 @@
     }
   },
   "app/components/workflow/hooks/use-inspect-vars-crud-common.ts": {
-    "ts/no-explicit-any": {
-      "count": 1
-    }
-  },
-  "app/components/workflow/hooks/use-node-data-update.ts": {
     "ts/no-explicit-any": {
       "count": 1
     }
@@ -8404,11 +8394,8 @@
     }
   },
   "app/components/workflow/index.tsx": {
-    "tailwindcss/enforce-consistent-class-order": {
-      "count": 1
-    },
     "ts/no-explicit-any": {
-      "count": 2
+      "count": 1
     }
   },
   "app/components/workflow/nodes/_base/components/add-variable-popup-with-position.tsx": {
@@ -10944,11 +10931,6 @@
     },
     "tailwindcss/no-unnecessary-whitespace": {
       "count": 1
-    }
-  },
-  "app/components/workflow/panel/version-history-panel/index.tsx": {
-    "tailwindcss/enforce-consistent-class-order": {
-      "count": 2
     }
   },
   "app/components/workflow/panel/version-history-panel/loading/index.tsx": {

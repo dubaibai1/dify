@@ -6,6 +6,7 @@ from typing import Literal
 import pytz
 from flask import request
 from flask_restx import Resource, fields, marshal_with
+from graphon.file import helpers as file_helpers
 from pydantic import BaseModel, Field, field_validator, model_validator
 from sqlalchemy import select
 
@@ -72,6 +73,10 @@ class AccountNamePayload(BaseModel):
 
 class AccountAvatarPayload(BaseModel):
     avatar: str
+
+
+class AccountAvatarQuery(BaseModel):
+    avatar: str = Field(..., description="Avatar file ID")
 
 
 class AccountInterfaceLanguagePayload(BaseModel):
@@ -159,6 +164,7 @@ def reg(cls: type[BaseModel]):
 reg(AccountInitPayload)
 reg(AccountNamePayload)
 reg(AccountAvatarPayload)
+reg(AccountAvatarQuery)
 reg(AccountInterfaceLanguagePayload)
 reg(AccountInterfaceThemePayload)
 reg(AccountTimezonePayload)
@@ -268,6 +274,18 @@ class AccountNameApi(Resource):
 
 @console_ns.route("/account/avatar")
 class AccountAvatarApi(Resource):
+    @console_ns.expect(console_ns.models[AccountAvatarQuery.__name__])
+    @console_ns.doc("get_account_avatar")
+    @console_ns.doc(description="Get account avatar url")
+    @setup_required
+    @login_required
+    @account_initialization_required
+    def get(self):
+        args = AccountAvatarQuery.model_validate(request.args.to_dict(flat=True))  # type: ignore
+
+        avatar_url = file_helpers.get_signed_file_url(args.avatar)
+        return {"avatar_url": avatar_url}
+
     @console_ns.expect(console_ns.models[AccountAvatarPayload.__name__])
     @setup_required
     @login_required

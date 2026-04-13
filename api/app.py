@@ -16,10 +16,15 @@ def is_db_command() -> bool:
 
 
 # create app
+flask_app = None
+socketio_app = None
+
 if is_db_command():
     from app_factory import create_migrations_app
 
     app = create_migrations_app()
+    socketio_app = app
+    flask_app = app
 else:
     # Gunicorn and Celery handle monkey patching automatically in production by
     # specifying the `gevent` worker class. Manual monkey patching is not required here.
@@ -30,8 +35,13 @@ else:
 
     from app_factory import create_app
 
-    app = create_app()
+    socketio_app, flask_app = create_app()
+    app = flask_app
     celery = cast("Celery", app.extensions["celery"])
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001)
+    from gevent import pywsgi
+    from geventwebsocket.handler import WebSocketHandler  # type: ignore[reportMissingTypeStubs]
+
+    server = pywsgi.WSGIServer(("0.0.0.0", 5001), socketio_app, handler_class=WebSocketHandler)
+    server.serve_forever()

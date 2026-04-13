@@ -3,10 +3,10 @@ import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ViewWorkflowHistory from '@/app/components/workflow/header/view-workflow-history'
 import { useNodesReadOnly } from '@/app/components/workflow/hooks'
+import { useWorkflowHistoryStore } from '@/app/components/workflow/workflow-history-store'
 import { cn } from '@/utils/classnames'
 import Divider from '../../base/divider'
 import TipPopup from '../operator/tip-popup'
-import { useWorkflowHistoryStore } from '../workflow-history-store'
 
 type UndoRedoProps = { handleUndo: () => void, handleRedo: () => void }
 const UndoRedo: FC<UndoRedoProps> = ({ handleUndo, handleRedo }) => {

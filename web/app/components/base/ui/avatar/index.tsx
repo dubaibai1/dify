@@ -21,18 +21,31 @@ export type AvatarProps = {
   avatar: string | null
   size?: AvatarSize
   className?: string
+  textClassName?: string
+  onError?: (hasError: boolean) => void
+  backgroundColor?: string
   onLoadingStatusChange?: (status: ImageLoadingStatus) => void
 }
 
 type AvatarRootProps = React.ComponentPropsWithRef<typeof BaseAvatar.Root> & {
   size?: AvatarSize
+  hasAvatar?: boolean
+  backgroundColor?: string
 }
 
 function AvatarRoot({
   size = 'md',
   className,
+  hasAvatar = false,
+  backgroundColor,
+  style,
   ...props
 }: AvatarRootProps) {
+  const resolvedStyle: React.CSSProperties = {
+    ...(backgroundColor && !hasAvatar ? { backgroundColor } : {}),
+    ...style,
+  }
+
   return (
     <BaseAvatar.Root
       className={cn(
@@ -40,6 +53,37 @@ function AvatarRoot({
         avatarSizeClasses[size].root,
         className,
       )}
+      style={resolvedStyle}
+      {...props}
+    />
+  )
+}
+
+type AvatarFallbackProps = React.ComponentPropsWithRef<typeof BaseAvatar.Fallback> & {
+  size?: AvatarSize
+  textClassName?: string
+}
+
+function AvatarFallback({
+  size = 'md',
+  textClassName,
+  className,
+  style,
+  ...props
+}: AvatarFallbackProps) {
+  const resolvedStyle: React.CSSProperties = {
+    ...style,
+  }
+
+  return (
+    <BaseAvatar.Fallback
+      className={cn(
+        'flex size-full items-center justify-center font-medium text-white',
+        avatarSizeClasses[size].text,
+        textClassName,
+        className,
+      )}
+      style={resolvedStyle}
       {...props}
     />
   )
@@ -59,44 +103,39 @@ function AvatarImage({
   )
 }
 
-type AvatarFallbackProps = React.ComponentPropsWithRef<typeof BaseAvatar.Fallback> & {
-  size?: AvatarSize
-}
-
-function AvatarFallback({
-  size = 'md',
-  className,
-  ...props
-}: AvatarFallbackProps) {
-  return (
-    <BaseAvatar.Fallback
-      className={cn(
-        'flex size-full items-center justify-center font-medium text-white',
-        avatarSizeClasses[size].text,
-        className,
-      )}
-      {...props}
-    />
-  )
-}
-
 export const Avatar = ({
   name,
   avatar,
   size = 'md',
   className,
+  textClassName,
+  onError,
+  backgroundColor,
   onLoadingStatusChange,
 }: AvatarProps) => {
+  const handleLoadingStatusChange = (status: ImageLoadingStatus) => {
+    onLoadingStatusChange?.(status)
+    if (status === 'error')
+      onError?.(true)
+    if (status === 'loaded')
+      onError?.(false)
+  }
+
   return (
-    <AvatarRoot size={size} className={className}>
+    <AvatarRoot
+      size={size}
+      className={className}
+      backgroundColor={backgroundColor}
+      hasAvatar={Boolean(avatar)}
+    >
       {avatar && (
         <AvatarImage
           src={avatar}
           alt={name}
-          onLoadingStatusChange={onLoadingStatusChange}
+          onLoadingStatusChange={handleLoadingStatusChange}
         />
       )}
-      <AvatarFallback size={size}>
+      <AvatarFallback size={size} textClassName={textClassName}>
         {name?.[0]?.toLocaleUpperCase()}
       </AvatarFallback>
     </AvatarRoot>
